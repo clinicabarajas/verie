@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>vERI(e)</title>
+    <meta name="apple-mobile-web-app-title" content="vERI(e)">
+    
+    <!-- Iconos "Nano Banana" integrados -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEMklEQVR4nO3bS08bRxTA8f8M2IbdgAnYfEmAQB6S8pCg8pCgPCXlKSpFSZOiUpQ0KSpFSZOiUpQ0KSpFSZOiUpQ0KSpF8pSgPCWlh6TykKA8BPAVbMAEbD67fXpI7MTeWe/MDo6I+X8bS8Ke+c6ZuzN3ZqYIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCIscX9vVvA7FzM8qfBvAn8DPAL4D8DXwCwAfev39T6vV6n9Vq9Ure/wshDUpN8D7AH4A8Fv86P8Vv9Y76g3wGIApADMAZgH8NIDvhZAcAnwBwK8ArvhRAt95/Y0Yw6T0AXgRwMsApgD89r/RAsAnCPEfAb4F4B8AF/zIAfgHwB8AfnR7DDEGCekHMAPgZwBvADg96AhvWID4BfAtAH8B8C2Ac37kBJwH8C2A39wep8QgIf0AXgfwE4C3AbwK4MTgR/vEAsQDgIu97j2AnwD8CGCp1z2EGACH9AN4E8A7AF7fXW/wI0AsQPwE4E8APwBY7HW/AjgnhBwIhGwGfAnAm7vrwN9vYwHiAcAFgDMAv95db/AbC9mOAsRfAF4G8N6ge9YAxA+AnwC4AN8AsH7I93X6jYXsRAHiGcDPAN7fXW8NfrRPLEAsQDzqdX8DeNbrfkIIOQgI2Qr4E4C3d9eZ+LXeUW+ApwBMAfgDwHe762/9bZl+YyEHFCHWpPwE4A0Arw7YswawAPEAsA7gAsBvD9E9P/3GQg6gX8gmwM8Afu6OOnWb9AZ4EsAkgD8AXPST/TjoxkIOIEFIDwBvEvyT0D89+f9uBvAn4O8Y/TPAV7v+9pIQQgghhBCNlH8m8OfS8U0Gf56c7wbwZwV/Pvyg9N66T0ofvPv/S+vDdwI87OfD2pSAb0ofqH9K6eO6E/AZ4M8u/vXz5zD/mvWvVf/68R0AbwbwvRDPZf6N87UvI/79+TOCv+b5e8GfK9wI+HwE/FnhjU/wI0j8qBM/+sSPbL6N8/X7n6/j+X8V/BnXm7A+S/vS4l83f47zNURv0PksX+P/W/7s4N8X/P0gZp8U8GcF/3N3YvYpAn9OfK/kZxd/jnjTEn+OeFPCnxPeXGEnZJ8k8N1Yf8v2XhCzlwiI6W99wXsh+X7P9m8QInoI6UOfuFvL7vX6A/iPCPCHBH+S7g/7RwgREf5fN/89l7g9O/wYRPgIAn/X+DsnPjbB3wWJO7bEj06EP8bAxxn8OAnfxvDbF/jbhHhXEPjThXjnCPidC3+PFO6NEnZ0gh/ZEnbEg+8nwt8bwu/dEnf/FrZ3SdgZCHGPhO2nCPsRwvdN2I6NsD1Vws9AiI+K8Ecf8TshfO8j+uYI+T0m6uYI8fkk4vNE/C4Of7aI757i26H/Ad74bWzWscqPAAAAAElFTkSuQmCC">
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEMklEQVR4nO3bS08bRxTA8f8M2IbdgAnYfEmAQB6S8pCg8pCgPCXlKSpFSZOiUpQ0KSpFSZOiUpQ0KSpFSZOiUpQ0KSpF8pSgPCWlh6TykKA8BPAVbMAEbD67fXpI7MTeWe/MDo6I+X8bS8Ke+c6ZuzN3ZqYIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCIscX9vVvA7FzM8qfBvAn8DPAL4D8DXwCwAfev39T6vV6n9Vq9Ure/wshDUpN8D7AH4A8Fv86P8Vv9Y76g3wGIApADMAZgH8NIDvhZAcAnwBwK8ArvhRAt95/Y0Yw6T0AXgRwMsApgD89r/RAsAnCPEfAb4F4B8AF/zIAfgHwB8AfnR7DDEGCekHMAPgZwBvADg96AhvWID4BfAtAH8B8C2Ac37kBJwH8C2A39wep8QgIf0AXgfwE4C3AbwK4MTgR/vEAsQDgIu97j2AnwD8CGCp1z2EGACH9AN4E8A7AF7fXW/wI0AsQPwE4E8APwBY7HW/AjgnhBwIhGwGfAnAm7vrwN9vYwHiAcAFgDMAv95db/AbC9mOAsRfAF4G8N6ge9YAxA+AnwC4AN8AsH7I93X6jYXsRAHiGcDPAN7fXW8NfrRPLEAsQDzqdX8DeNbrfkIIOQgI2Qr4E4C3d9eZ+LXeUW+ApwBMAfgDwHe762/9bZl+YyEHFCHWpPwE4A0Arw7YswawAPEAsA7gAsBvD9E9P/3GQg6gX8gmwM8Afu6OOnWb9AZ4EsAkgD8AXPST/TjoxkIOIEFIDwBvEvyT0D89+f9uBvAn4O8Y/TPAV7v+9pIQQgghhBCNlH8m8OfS8U0Gf56c7wbwZwV/Pvyg9N66T0ofvPv/S+vDdwI87OfD2pSAb0ofqH9K6eO6E/AZ4M8u/vXz5zD/mvWvVf/68R0AbwbwvRDPZf6N87UvI/79+TOCv+b5e8GfK9wI+HwE/FnhjU/wI0j8qBM/+sSPbL6N8/X7n6/j+X8V/BnXm7A+S/vS4l83f47zNURv0PksX+P/W/7s4N8X/P0gZp8U8GcF/3N3YvYpAn9OfK/kZxd/jnjTEn+OeFPCnxPeXGEnZJ8k8N1Yf8v2XhCzlwiI6W99wXsh+X7P9m8QInoI6UOfuFvL7vX6A/iPCPCHBH+S7g/7RwgREf5fN/89l7g9O/wYRPgIAn/X+DsnPjbB3wWJO7bEj06EP8bAxxn8OAnfxvDbF/jbhHhXEPjThXjnCPidC3+PFO6NEnZ0gh/ZEnbEg+8nwt8bwu/dEnf/FrZ3SdgZCHGPhO2nCPsRwvdN2I6NsD1Vws9AiI+K8Ecf8TshfO8j+uYI+T0m6uYI8fkk4vNE/C4Of7aI757i26H/Ad74bWzWscqPAAAAAElFTkSuQmCC">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogInZFUkkoZSkiLAogICJzaG9ydF9uYW1lIjogInZFUkkoZSkiLAogICJzdGFydF91cmwiOiAiaW5kZXguaHRtbCIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzc0YjllNyIsCiAgInRoZW1lX2NvbG9yIjogIiMxZTNhOGEiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBR1FBQUFCa0NBTUFZQUI1WjJZTkFBQUFDWEJJU1doY0FBQUxFd0FBQ3hNQkFBTkV3RUEgbXB3dzRBRUVEa2wwTThid0haZzQ0cFBCZzNBUTNkZ05tWXBOTThSajYzdlBwSTdFVHViOVg5TURvNEllWjltemM0b2VVSUlRUVFnZ2hnQkJD R0VFRUlJSVFRZ2doZ0JCQ0dFRUlJSVFRZ2doZ0JCQ0dFSUVpY2ZkdjlNMDdlSThmZjhNM0N2QXZnSHdEekFEL0FmOEQvOHN2OWIzNmczNndIeERVeE55RDdBZjhFdjhiUDFrM29nTUFwQUZBRG1BTXNEZUFid2ZreHZSM29EUEFFQUJnRE1BWmdIbThmOE5BTHRoc0JlQUhDRmZBYmNGNEIrQUVmeW9BZ2dId0I4QWZoSjdEREVEV0VHeWtIekVfQW9BM0FBZThId0IrQUh3OTZBaHZXR0I0QmNBZjhEOGEzQTN2Q0RCd0NId0I4QWZvNjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RDd0NId0I4QWZvdTVEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0REd0NId0I4QWZvMjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RFeENId0I4QWZvWHZ2VnY4QzdBTThxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhrZkJ3S0loY0ZkdjBObUwwSFA4Q0NBeEJJSWRHckZscTFVMFcwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRjhscUhwQ0daRUVJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFSUVpY2ZkYjVETURkSDZNMzhDM0N2QWdaOEVmNEFid0YrQUg4TzhFYmNGNEIrQUh3OTZBaHZXR0I0QmNBZjhEOGEzQTN2Q0RCd0NId0I4QWZvNjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RDd0NId0I4QWZvdTVEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0REd0NId0I4QWZvMjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RFeENId0I4QWZvWHZ2VnY4QzdBTThxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhrZkJ3S0loY0ZkdjBObUwwSFA4Q0NBeEJJSWRHckZscTFVMFcwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRjhscUhwQ0daRUVJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFSUVpY2ZkYjVETURkSDZNMzhDM0N2QWdaOEVmNEFid0YrQUg4TzhFYmNGNEIrQUh3OTZBaHZXR0I0QmNBZjhEOGEzQTN2Q0RCd0NId0I4QWZvNjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RDd0NId0I4QWZvdTVEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0REd0NId0I4QWZvMjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RFeENId0I4QWZvWHZ2VnY4QzdBTThxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhrZkJ3S0loY0ZkdjBObUwwSFA4Q0NBeEJJSWRHckZscTFVMFcwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRjhscUhwQ0daRUVJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFSUVpY2ZkYjVETURkSDZNMzhDM0N2QWdaOEVmNEFid0YrQUg4TzhFYmNGNEIrQUh3OTZBaHZXR0I0QmNBZjhEOGEzQTN2Q0RCd0NId0I4QWZvNjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RDd0NId0I4QWZvdTVEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0REd0NId0I4QWZvMjdEREVHQ2VrRUhzRTNBNzhId0IrQXg4b0FnZ0h3SDRBOUVpREdBcHdWM29FUEFFNEFid2Y0RTNBK0FuZzNhOEFDSERKREhFSEI4RThBOGEwQTN2Q0RFeENId0I4QWZvWHZ2VnY4QzdBTThxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhxZkJ2QW53RThBOHNEUDhDd0E4QWZvRDMwRDRBZDhrZkJ3S0loY0ZkdjBObUwwSFA4Q0NBeEJJSWRHckZscTFVMFcwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRlMwS1NsRjhscUhwQ0daRUVJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFRUlJSVFRZ2doZ0JDQ0dFSUVpY2ZkMkUvSExSclpHRm1hV05vWVc1dllXNWZjbTloTFdsdVpHeDVkR0ZzYjI1bExtcHNiM05mWTI5c2IzSmZjbTloTFdsdVpHeDVkR0ZzYjI1bWFXNWhiRjloY0hCcWNtc2daR2YwT0FBQUFBU1VVT0tSUnpUZD0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0=">
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f1f5f9; margin: 0; padding: 12px; color: #334155; }
+      .app-card { max-width: 500px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); position: relative; }
+      
+      h2 { color: #1e3a8a; text-align: center; margin-top: 0; margin-bottom: 4px; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+      .app-subtitle { text-align: center; color: #64748b; font-size: 12px; font-weight: 600; line-height: 1.4; max-width: 320px; margin: 0 auto 20px auto; text-transform: uppercase; letter-spacing: 0.3px; }
+      
+      .tabs { display: flex; margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e1; }
+      .tab-btn { flex: 1; padding: 12px; text-align: center; background: #e2e8f0; font-weight: bold; font-size: 13px; cursor: pointer; border: none; color: #64748b; transition: all 0.2s; }
+      .tab-od-btn.active { background: #dc2626 !important; color: white !important; }
+      .tab-oi-btn.active { background: #2563eb !important; color: white !important; }
+      
+      .tab-content { display: none; }
+      .tab-content.active { display: block; }
+      
+      .section-title { font-size: 14px; font-weight: 700; margin: 18px 0 10px 0; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .od-title { color: #dc2626; border-bottom: 2px solid #fee2e2; }
+      .oi-title { color: #2563eb; border-bottom: 2px solid #dbeafe; }
+      
+      .text-od { color: #dc2626 !important; }
+      .text-oi { color: #2563eb !important; }
+      
+      .grid-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .form-group { margin-bottom: 12px; }
+      label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; }
+      input[type="number"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 15px; background-color: #f8fafc; }
+      
+      .form-group.text-od input:focus { border-color: #dc2626; outline: none; background-color: #fff; }
+      .form-group.text-oi input:focus { border-color: #2563eb; outline: none; background-color: #fff; }
+      
+      button.submit-btn { width: 100%; background-color: #10b981; color: white; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 25px; }
+      button.submit-btn:active { background-color: #059669; }
+      
+      .nav-btn-back { width: 100%; background-color: #2563eb; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+      .nav-btn-pdf { width: 100%; background-color: #f59e0b; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+      .nav-btn-clear { width: 100%; background-color: #ef4444; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 30px; margin-bottom: 15px; }
+      
+      #screen-form { display: block; }
+      #screen-results { display: none; }
+      
+      #success-msg { text-align: center; font-weight: bold; color: #166534; background: #f0fdf4; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+      .main-chart-header { text-align: center; color: #334155; margin: 25px 0 15px 0; font-size: 19px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; clear: both; }
+      
+      .centered-title { text-align: center; font-weight: 700; font-size: 15px; margin-bottom: 8px; line-height: 1.6; padding-bottom: 2px; clear: both; }
+      .chart-subtitle { text-align: center; color: #64748b; font-size: 13px; font-weight: 700; margin-top: -10px; margin-bottom: 15px; letter-spacing: 0.5px; }
+      .main-chart-subtitle { text-align: center; color: #64748b; font-size: 13px; font-weight: 600; margin-top: -10px; margin-bottom: 18px; text-transform: none; }
+      
+      .chart-block { clear: both; display: block; width: 100%; margin-bottom: 30px; text-align: center; }
+      
+      .chart-container { width: 100%; height: 260px; margin: 0 auto 10px auto; }
+      .chart-container-sii { width: 100%; height: 320px; margin: 0 auto 10px auto; }
+      .chart-container-proyeccion { width: 100%; height: 380px; margin: 0 auto 10px auto; }
+
+      .clinical-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 5px; font-size: 13.5px; background: #ffffff; border: 1px solid #cbd5e1; }
+      .clinical-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 700; padding: 8px; border: 1px solid #cbd5e1; text-align: center; text-transform: uppercase; font-size: 11.5px; }
+      .clinical-table td { padding: 8px; border: 1px solid #cbd5e1; text-align: center; color: #334155; }
+      .clinical-table td.row-label { text-align: left; font-weight: 700; background-color: #f8fafc; color: #1e293b; width: 38%; }
+      .clinical-table tr.highlight-row td { background-color: #f8fafc; font-weight: 800; color: #000000; border-top: 2px solid #cbd5e1; }
+      .table-footnote { font-size: 11px; color: #64748b; margin-bottom: 20px; line-height: 1.4; padding-left: 5px; font-style: italic; text-align: left; }
+      
+      .report-footer { margin-top: 35px; padding-top: 15px; border-top: 1px solid #cbd5e1; margin-bottom: 40px; }
+      .disclaimer-text { font-size: 11px; color: #64748b; line-height: 1.5; text-align: justify; margin-bottom: 5px; }
+
+      .app-print-footer { text-align: center; font-size: 11px; color: #64748b; font-weight: 600; margin-top: 30px; padding-top: 15px; border-top: 1px solid #cbd5e1; clear: both; }
+
+      @media print {
+        body { background-color: #ffffff; margin: 0; padding: 0 0 15mm 0 !important; color: #000000; }
+        .app-card { box-shadow: none; padding: 0; max-width: 100%; width: 100%; }
+        
+        .nav-btn-back, .nav-btn-pdf, .nav-btn-clear, .tabs, form, #screen-form, #success-msg { display: none !important; }
+        #screen-results { display: block !important; }
+        
+        .print-page-break { page-break-before: always !important; break-before: page !important; }
+        
+        .print-container-block { text-align: center !important; width: 100% !important; display: block !important; }
+        
+        .chart-block { width: 100% !important; max-width: 460px !important; margin-left: auto !important; margin-right: auto !important; display: block !important; clear: both !important; }
+        .chart-container, .chart-container-sii, .chart-container-proyeccion { width: 100% !important; max-width: 460px !important; margin-left: auto !important; margin-right: auto !important; display: block !important; }
+
+        .clinical-table { display: table !important; width: 90% !important; max-width: 460px !important; margin-left: auto !important; margin-right: auto !important; float: none !important; }
+        .table-footnote { max-width: 460px !important; margin: 6px auto 20px auto !important; padding-left: 5px !important; display: block !important; }
+        .report-footer { max-width: 460px !important; margin: 25px auto 0 auto !important; display: block !important; border-top: 1px solid #cbd5e1 !important; }
+        
+        .centered-title, .main-chart-header { display: block !important; clear: both !important; text-align: center !important; width: 100% !important; }
+
+        .app-print-footer {
+          position: fixed !important;
+          bottom: 5mm !important;
+          left: 0 !important;
+          right: 0 !important;
+          border-top: none !important;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+          font-size: 10px !important;
+          display: block !important;
+          background: #ffffff !important;
+          width: 100% !important;
+          text-align: center !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-card">
+      
+      <h2>vERI(e)</h2>
+      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div>
+      
+      <div id="screen-form">
+        <div class="tabs">
+          <div class="tab-btn active tab-od-btn" onclick="switchTab('od', this)">OÍDO DERECHO (OD)</div>
+          <div class="tab-btn tab-oi-btn" onclick="switchTab('oi', this)">OÍDO IZQUIERDO (OI)</div>
+        </div>
+        
+        <form id="mobileForm" onsubmit="calcularLocal(event)">
+          <div id="tab-od" class="tab-content active">
+            <div class="section-title od-title">📉 Audiometría (OD)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-od"><label>500 Hz</label><input type="number" step="any" id="field_OD_500"></div>
+              <div class="form-group text-od"><label>1 kHz</label><input type="number" step="any" id="field_OD_1k"></div>
+              <div class="form-group text-od"><label>2 kHz</label><input type="number" step="any" id="field_OD_2K"></div>
+              <div class="form-group text-od"><label>4 kHz</label><input type="number" step="any" id="field_OD_4K"></div>
+            </div>
+            
+            <div class="section-title od-title">📊 Prescripción (OD)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-od"><label>250 Hz</label><input type="number" step="any" id="field_P250_OD"></div>
+              <div class="form-group text-od"><label>500 Hz</label><input type="number" step="any" id="field_P500_OD"></div>
+              <div class="form-group text-od"><label>1 kHz</label><input type="number" step="any" id="field_P1K_OD"></div>
+              <div class="form-group text-od"><label>2 kHz</label><input type="number" step="any" id="field_P2K_OD"></div>
+              <div class="form-group text-od"><label>4 kHz</label><input type="number" step="any" id="field_P4K_OD"></div>
+              <div class="form-group text-od"><label>8 kHz</label><input type="number" step="any" id="field_P8K_OD"></div>
+            </div>
+            
+            <div class="section-title od-title">🔊 REAR (OD)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-od"><label>250 Hz</label><input type="number" step="any" id="field_R250_OD"></div>
+              <div class="form-group text-od"><label>500 Hz</label><input type="number" step="any" id="field_R500_OD"></div>
+              <div class="form-group text-od"><label>1 kHz</label><input type="number" step="any" id="field_R1K_OD"></div>
+              <div class="form-group text-od"><label>2 kHz</label><input type="number" step="any" id="field_R2K_OD"></div>
+              <div class="form-group text-od"><label>4 kHz</label><input type="number" step="any" id="field_R4K_OD"></div>
+              <div class="form-group text-od"><label>8 kHz</label><input type="number" step="any" id="field_R8K_OD"></div>
+            </div>
+            
+            <div class="section-title od-title">🎯 SII (OD)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-od"><label>SII (Sin Amp)</label><input type="number" step="any" id="field_SII_OD"></div>
+              <div class="form-group text-od"><label>SII (Con Amp)</label><input type="number" step="any" id="field_SIIa_OD"></div>
+            </div>
+          </div>
+          
+          <div id="tab-oi" class="tab-content">
+            <div class="section-title oi-title">📉 Audiometría (OI)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-oi"><label>500 Hz</label><input type="number" step="any" id="field_OI_500"></div>
+              <div class="form-group text-oi"><label>1 kHz</label><input type="number" step="any" id="field_OI_1K"></div>
+              <div class="form-group text-oi"><label>2 kHz</label><input type="number" step="any" id="field_OI_2K"></div>
+              <div class="form-group text-oi"><label>4 kHz</label><input type="number" step="any" id="field_OI_4K"></div>
+            </div>
+            
+            <div class="section-title oi-title">📊 Prescripción (OI)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-oi"><label>250 Hz</label><input type="number" step="any" id="field_P250_OI"></div>
+              <div class="form-group text-oi"><label>500 Hz</label><input type="number" step="any" id="field_P500_OI"></div>
+              <div class="form-group text-oi"><label>1 kHz</label><input type="number" step="any" id="field_P1K_OI"></div>
+              <div class="form-group text-oi"><label>2 kHz</label><input type="number" step="any" id="field_P2K_OI"></div>
+              <div class="form-group text-oi"><label>4 kHz</label><input type="number" step="any" id="field_P4K_OI"></div>
+              <div class="form-group text-oi"><label>8 kHz</label><input type="number" step="any" id="field_P8K_OI"></div>
+            </div>
+            
+            <div class="section-title oi-title">🔊 REAR (OI)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-oi"><label>250 Hz</label><input type="number" step="any" id="field_R250_OI"></div>
+              <div class="form-group text-oi"><label>500 Hz</label><input type="number" step="any" id="field_R500_OI"></div>
+              <div class="form-group text-oi"><label>1 kHz</label><input type="number" step="any" id="field_R1K_OI"></div>
+              <div class="form-group text-oi"><label>2 kHz</label><input type="number" step="any" id="field_R2K_OI"></div>
+              <div class="form-group text-oi"><label>4 kHz</label><input type="number" step="any" id="field_R4K_OI"></div>
+              <div class="form-group text-oi"><label>8 kHz</label><input type="number" step="any" id="field_R8K_OI"></div>
+            </div>
+            
+            <div class="section-title oi-title">🎯 SII (OI)</div>
+            <div class="grid-inputs">
+              <div class="form-group text-oi"><label>SII (Sin Amp)</label><input type="number" step="any" id="field_SII_OI"></div>
+              <div class="form-group text-oi"><label>SII (Con Amp)</label><input type="number" step="any" id="field_SIIa_OI"></div>
+            </div>
+          </div>
+          
+          <button type="submit" class="submit-btn">Calcular Análisis Clínico</button>
+        </form>
+      </div>
+      
+      <div id="screen-results">
+        <button class="nav-btn-back" onclick="irAPantallaFormulario()">← Volver a los Datos / Modificar</button>
+        <button class="nav-btn-pdf" onclick="window.print()">📄 Guardar Reporte (PDF / Imprimir)</button>
+        
+        <div id="success-msg"></div>
+        
+        <div class="print-container-block">
+          <div class="main-chart-header">Precisión del Ajuste</div>
+          <div class="main-chart-subtitle">Error cuadrático (RSME) del ajuste</div>
+          
+          <div class="chart-block">
+            <div class="centered-title text-od">Audífono derecho</div>
+            <div id="chart_rsme_od" class="chart-container"></div>
+          </div>
+          
+          <div class="chart-block">
+            <div class="centered-title text-oi">Audífono izquierdo</div>
+            <div id="chart_rsme_oi" class="chart-container"></div>
+          </div>
+        </div>
+        
+        <div class="print-container-block print-page-break">
+          <div class="chart-block">
+            <div class="main-chart-header">Speech Intelligibility Index</div>
+            <div id="chart_sii" class="chart-container-sii"></div>
+          </div>
+
+          <div class="chart-block">
+            <div class="main-chart-header" style="margin-top: 25px !important;">Proyección del SII</div>
+            <div class="chart-subtitle">NAL NL2</div>
+            <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div>
+          </div>
+        </div>
+
+        <div class="print-container-block print-page-break">
+          <div class="main-chart-header">Tablas de Datos Clínicos</div>
+          <div id="contenedor_tabla_rsme"></div>
+          <div id="contenedor_tabla_sii"></div>
+
+          <div class="report-footer">
+            <div class="disclaimer-text">
+              <strong>Aviso legal y exención de responsabilidad:</strong> Esta herramienta digital ha sido desarrollada con fines exclusivamente analíticos y de soporte orientativo. No cuenta con certificación de dispositivo médico ni validación clínica oficial. Las decisiones audioprotésicas, de ajuste y diagnósticas finales deben fundamentarse exclusivamente en el criterio y juicio crítico del profesional sanitario cualificado.
+            </div>
+          </div>
+        </div>
+
+        <button class="nav-btn-clear" onclick="limpiarTodoFormulario()">🧹 Nuevo Paciente (Borrar Todo)</button>
+      </div>
+
+      <div class="app-print-footer">© 2026 Zenker. Todos los derechos reservados.</div>
+      
+    </div>
+
+    <script>
+      google.charts.load('current', {'packages':['corechart']});
+
+      document.addEventListener('DOMContentLoaded', function() {
+        switchTab('od', document.querySelectorAll('.tab-btn')[0]);
+        
+        document.getElementById('mobileForm').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        });
+      });
+
+      function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        btn.classList.add('active');
+      }
+
+      function val(id) {
+        let element = document.getElementById(id);
+        return (element && element.value !== "") ? Number(element.value) : null;
+      }
+
+      function irAPantallaFormulario() {
+        document.getElementById('screen-results').style.display = 'none';
+        document.getElementById('screen-form').style.display = 'block';
+        window.scrollTo(0, 0);
+      }
+
+      function limpiarTodoFormulario() {
+        if (confirm("¿Estás seguro de que deseas borrar todos los datos actuales para un nuevo paciente?")) {
+          document.getElementById('mobileForm').reset();
+          irAPantallaFormulario();
+          switchTab('od', document.querySelectorAll('.tab-btn')[0]);
+        }
+      }
+
+      function calcularLocal(e) {
+        e.preventDefault();
+        
+        const snapshot = {
+          OD: {
+            a500: val('field_OD_500'), a1k: val('field_OD_1k'), a2k: val('field_OD_2K'), a4k: val('field_OD_4K'),
+            p250: val('field_P250_OD'), p500: val('field_P500_OD'), p1k: val('field_P1K_OD'), p2k: val('field_P2K_OD'), p4k: val('field_P4K_OD'), p8k: val('field_P8K_OD'),
+            r250: val('field_R250_OD'), r500: val('field_R500_OD'), r1k: val('field_R1K_OD'), r2k: val('field_R2K_OD'), r4k: val('field_R4K_OD'), r8k: val('field_R8K_OD'),
+            sii: val('field_SII_OD'), siia: val('field_SIIa_OD')
+          },
+          OI: {
+            a500: val('field_OI_500'), a1k: val('field_OI_1K'), a2k: val('field_OI_2K'), a4k: val('field_OI_4K'),
+            p250: val('field_P250_OI'), p500: val('field_P500_OI'), p1k: val('field_P1K_OI'), p2k: val('field_P2K_OI'), p4k: val('field_P4K_OI'), p8k: val('field_P8K_OI'),
+            r250: val('field_R250_OI'), r500: val('field_R500_OI'), r1k: val('field_R1K_OI'), r2k: val('field_R2K_OI'), r4k: val('field_R4K_OI'), r8k: val('field_R8K_OI'),
+            sii: val('field_SII_OI'), siia: val('field_SIIa_OI')
+          }
+        };
+
+        document.getElementById('screen-form').style.display = 'none';
+        document.getElementById('screen-results').style.display = 'block';
+        document.getElementById('success-msg').innerHTML = `✅ Ajuste procesado con éxito`;
+        window.scrollTo(0, 0);
+        
+        dibujarGraficoRSME_Local('OD', snapshot.OD);
+        dibujarGraficoRSME_Local('OI', snapshot.OI);
+        dibujarGraficoSII_Local(snapshot);
+        dibujarGraficoProyeccionSII_Local(snapshot);
+        
+        construirTablasHTML(snapshot);
+      }
+
+      function dibujarGraficoRSME_Local(oId, d) {
+        function diff(p, r) { return (p !== null && r !== null) ? (r - p) : null; }
+        const d250 = diff(d.p250, d.r250); const d500 = diff(d.p500, d.r500);
+        const d1k  = diff(d.p1k,  d.r1k);  const d2k  = diff(d.p2k,  d.r2k);
+        const d4k  = diff(d.p4k,  d.r4k);  const d8k  = diff(d.p8k,  d.r8k);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Frecuencia');
+        dataTable.addColumn('number', 'RSME');
+        dataTable.addColumn({type: 'string', role: 'annotation'});
+        dataTable.addColumn('number', 'Límite +5');
+        dataTable.addColumn('number', 'Límite -5');
+        dataTable.addColumn('number', 'Línea 0');
+
+        function fmt(v) { return v !== null ? String(Math.round(v)) : null; }
+        dataTable.addRows([
+          ['0,25', d250, fmt(d250), 5, -5, 0], ['0,5', d500, fmt(d500), 5, -5, 0],
+          ['1',    d1k,  fmt(d1k),  5, -5, 0], ['2',   d2k,  fmt(d2k),  5, -5, 0],
+          ['4',    d4k,  fmt(d4k),  5, -5, 0], ['8',   d8k,  fmt(d8k),  5, -5, 0]
+        ]);
+
+        const lineColor = oId === 'OD' ? '#dc2626' : '#2563eb';
+        const options = {
+          curveType: 'none', legend: { position: 'none' },
+          hAxis: { title: 'Frecuencia (kHz)', titleTextStyle: { bold: true, fontSize: 12, color: '#64748b' }, gridlines: { color: 'transparent' } },
+          vAxis: { 
+            title: 'RSME (dB SPL)', 
+            titleTextStyle: { bold: true, fontSize: 12, color: '#64748b' }, 
+            viewWindow: { min: -20, max: 20 }, 
+            ticks: [-20, -15, -10, -5, 0, 5, 10, 15, 20],
+            format: '0'
+          },
+          annotations: { textStyle: { fontSize: 15, bold: true, color: lineColor } },
+          series: {
+            0: { color: lineColor, pointSize: 10, lineWidth: 4 }, 
+            1: { color: '#475569', lineWidth: 3, lineDashStyle: [6, 4], enableInteractivity: false }, 
+            2: { color: '#475569', lineWidth: 3, lineDashStyle: [6, 4], enableInteractivity: false }, 
+            3: { color: '#000000', lineWidth: 2, enableInteractivity: false } 
+          },
+          chartArea: { left: 55, width: '80%', height: '75%', top: 15, bottom: 45 }
+        };
+        const chart = new google.visualization.LineChart(document.getElementById(`chart_rsme_${oId.toLowerCase()}`));
+        chart.draw(dataTable, options);
+      }
+
+      function dibujarGraficoSII_Local(sn) {
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Oído');
+        dataTable.addColumn('number', 'Sin audífono');
+        dataTable.addColumn({type: 'string', role: 'annotation'});
+        dataTable.addColumn('number', 'Con audífono');
+        dataTable.addColumn({type: 'string', role: 'annotation'});
+
+        function fmt(v) { return v !== null ? String(Math.round(v)) : null; }
+        dataTable.addRows([
+          ['OD', sn.OD.sii, fmt(sn.OD.sii), sn.OD.siia, fmt(sn.OD.siia)],
+          ['OI', sn.OI.sii, fmt(sn.OI.sii), sn.OI.siia, fmt(sn.OI.siia)]
+        ]);
+
+        const options = {
+          legend: { position: 'top', alignment: 'center', textStyle: { fontSize: 12, bold: true } },
+          colors: ['#bdaeaf', '#595959'], 
+          hAxis: { gridlines: { color: 'transparent' }, textStyle: { fontSize: 14, bold: true, color: '#000000' } },
+          vAxis: { title: 'SII (0-100)', titleScaleType: 'linear', titleTextStyle: { bold: true, fontSize: 12, color: '#334155' }, viewWindow: { min: 0, max: 100 }, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], format: '0' },
+          annotations: { textStyle: { fontSize: 14, bold: true, color: '#ffffff' }, alwaysOutside: false },
+          chartArea: { left: 55, width: '80%', height: '70%', top: 35, bottom: 45 }
+        };
+        const chart = new google.visualization.ColumnChart(document.getElementById('chart_sii'));
+        chart.draw(dataTable, options);
+      }
+
+      function dibujarGraficoProyeccionSII_Local(sn) {
+        let pta_od = (sn.OD.a500!==null && sn.OD.a1k!==null && sn.OD.a2k!==null && sn.OD.a4k!==null) ? ((sn.OD.a500 + sn.OD.a1k + sn.OD.a2k + sn.OD.a4k) / 4) : null;
+        let pta_oi = (sn.OI.a500!==null && sn.OI.a1k!==null && sn.OI.a2k!==null && sn.OI.a4k!==null) ? ((sn.OI.a500 + sn.OI.a1k + sn.OI.a2k + sn.OI.a4k) / 4) : null;
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('number', 'PTA');
+        dataTable.addColumn('number', 'Límite Inferior');
+        dataTable.addColumn('number', 'SII (%)');
+        dataTable.addColumn('number', 'Límite Superior');
+        dataTable.addColumn('number', 'SII OD');
+        dataTable.addColumn('number', 'SII OI');
+
+        let ticksX = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
+        if (pta_od !== null && !ticksX.includes(pta_od)) ticksX.push(pta_od);
+        if (pta_oi !== null && !ticksX.includes(pta_oi)) ticksX.push(pta_oi);
+        ticksX.sort((a, b) => a - b);
+
+        ticksX.forEach(x => {
+          let y_inf = -0.7 * x + 79; let y_med = -0.7 * x + 89; let y_sup = -0.7 * x + 109;
+          let y_od = (pta_od !== null && Math.abs(x - pta_od) < 0.0001) ? sn.OD.siia : null;
+          let y_oi = (pta_oi !== null && Math.abs(x - pta_oi) < 0.0001) ? sn.OI.siia : null;
+          dataTable.addRow([x, y_inf, y_med, y_sup, y_od, y_oi]);
+        });
+
+        const options = {
+          legend: { position: 'top', alignment: 'center', textStyle: { fontSize: 10, bold: true } },
+          hAxis: { title: 'Media umbral auditivo (dB HL)', titleTextStyle: { bold: true, fontSize: 11, color: '#475569' }, viewWindow: { min: 0, max: 120 }, ticks: [0, 20, 40, 60, 80, 100, 120], gridlines: { color: '#e2e8f0' } },
+          vAxis: { title: 'SII Amplificado (0-100)', titleTextStyle: { bold: true, fontSize: 11, color: '#475569' }, viewWindow: { min: 0, max: 100 }, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], gridlines: { color: '#e2e8f0' }, format: '0' },
+          series: {
+            0: { labelInLegend: 'Límite Inferior', color: '#1e293b', lineWidth: 2, lineDashStyle: [6, 4], pointSize: 0, enableInteractivity: false },
+            1: { labelInLegend: 'SII (%)', color: '#000000', lineWidth: 1.5, pointSize: 0, enableInteractivity: false },
+            2: { labelInLegend: 'Límite Superior', color: '#1e293b', lineWidth: 2, lineDashStyle: [8, 4, 2, 4], pointSize: 0, enableInteractivity: false },
+            3: { labelInLegend: 'SII OD', color: '#dc2626', lineWidth: 0, pointSize: 10, pointShape: 'circle' },
+            4: { labelInLegend: 'SII OI', color: '#2563eb', lineWidth: 0, pointSize: 12, pointShape: 'star' }
+          },
+          chartArea: { left: 55, width: '82%', height: '75%', top: 35, bottom: 50 }
+        };
+        const chart = new google.visualization.LineChart(document.getElementById('chart_sii_proyeccion'));
+        chart.draw(dataTable, options);
+      }
+
+      function construirTablasHTML(sn) {
+        function evaluarCellRSME(p, r) {
+          if (p === null || r === null) return "-";
+          let diff = r - p;
+          let abs = Math.abs(diff);
+          if (abs > 10) return Math.round(diff) + " **";
+          if (abs > 5) return Math.round(diff) + " *";
+          return Math.round(diff);
+        }
+
+        function calcularRSME_Global(p250, r250, p500, r500, p1k, r1k, p2k, r2k, p4k, r4k) {
+          let sumSquares = 0; let count = 0;
+          let pairs = [[p250, r250], [p500, r500], [p1k, r1k], [p2k, r2k], [p4k, r4k]];
+          pairs.forEach(pair => {
+            if (pair[0] !== null && pair[1] !== null) {
+              let d = pair[1] - pair[0]; sumSquares += d * d; count++;
+            }
+          });
+          return count > 0 ? Math.round(Math.sqrt(sumSquares / count)) : "-";
+        }
+
+        let rsme_od_global = calcularRSME_Global(sn.OD.p250, sn.OD.r250, sn.OD.p500, sn.OD.r500, sn.OD.p1k, sn.OD.r1k, sn.OD.p2k, sn.OD.r2k, sn.OD.p4k, sn.OD.r4k);
+        let rsme_oi_global = calcularRSME_Global(sn.OI.p250, sn.OI.r250, sn.OI.p500, sn.OI.r500, sn.OI.p1k, sn.OI.r1k, sn.OI.p2k, sn.OI.r2k, sn.OI.p4k, sn.OI.r4k);
+
+        let htmlRSME = `
+          <table class="clinical-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;">RSME (dB SPL)</th>
+                <th>Oído Derecho</th>
+                <th>Oído Izquierdo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="row-label">0.25 kHz</td><td>${evaluarCellRSME(sn.OD.p250, sn.OD.r250)}</td><td>${evaluarCellRSME(sn.OI.p250, sn.OI.r250)}</td></tr>
+              <tr><td class="row-label">0.5 kHz</td><td>${evaluarCellRSME(sn.OD.p500, sn.OD.r500)}</td><td>${evaluarCellRSME(sn.OI.p500, sn.OI.r500)}</td></tr>
+              <tr><td class="row-label">1 kHz</td><td>${evaluarCellRSME(sn.OD.p1k, sn.OD.r1k)}</td><td>${evaluarCellRSME(sn.OI.p1k, sn.OI.r1k)}</td></tr>
+              <tr><td class="row-label">2 kHz</td><td>${evaluarCellRSME(sn.OD.p2k, sn.OD.r2k)}</td><td>${evaluarCellRSME(sn.OI.p2k, sn.OI.r2k)}</td></tr>
+              <tr><td class="row-label">4 kHz</td><td>${evaluarCellRSME(sn.OD.p4k, sn.OD.r4k)}</td><td>${evaluarCellRSME(sn.OI.p4k, sn.OI.r4k)}</td></tr>
+              <tr><td class="row-label">8 kHz</td><td>${evaluarCellRSME(sn.OD.p8k, sn.OD.r8k)}</td><td>${evaluarCellRSME(sn.OI.p8k, sn.OI.r8k)}</td></tr>
+              <tr class="highlight-row"><td class="row-label">RSME Global</td><td>${rsme_od_global}</td><td>${rsme_oi_global}</td></tr>
+            </tbody>
+          </table>
+          <div class="table-footnote">
+            (*) Fuera del rango de Tolerancia según la BSA 2018.<br>
+            (**) No se tiene en cuenta en el cálculo del RSME Global.
+          </div>
+        `;
+        document.getElementById('contenedor_tabla_rsme').innerHTML = htmlRSME;
+
+        let pta_od = (sn.OD.a500!==null && sn.OD.a1k!==null && sn.OD.a2k!==null && sn.OD.a4k!==null) ? Math.round((sn.OD.a500 + sn.OD.a1k + sn.OD.a2k + sn.OD.a4k) / 4) : "-";
+        let pta_oi = (sn.OI.a500!==null && sn.OI.a1k!==null && sn.OI.a2k!==null && sn.OI.a4k!==null) ? Math.round((sn.OI.a500 + sn.OI.a1k + sn.OI.a2k + sn.OI.a4k) / 4) : "-";
+
+        function interpretarGananciaSII(sii, siia) {
+          if (sii === null || siia === null) return "-";
+          let netGain = siia - sii; 
+          if (netGain < 0) return "Revisar";
+          if (netGain <= 4) return "Muy baja";
+          if (netGain <= 9) return "Baja";
+          if (netGain <= 14) return "Moderada";
+          if (netGain <= 19) return "Promedio";
+          if (netGain <= 24) return "Alta";
+          return "Muy alta";
+        }
+
+        let htmlSII = `
+          <table class="clinical-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;">SPEECH INTELLIGIBILITY INDEX</th>
+                <th>Oído Derecho</th>
+                <th>Oído Izquierdo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="row-label">Intensidad</td><td>65 dB SPL</td><td>65 dB SPL</td></tr>
+              <tr><td class="row-label">Estímulo</td><td>ISTS</td><td>ISTS</td></tr>
+              <tr><td class="row-label">Media Umbral (PTA)</td><td>${pta_od}</td><td>${pta_oi}</td></tr>
+              <tr><td class="row-label">SII (Sin Amp)</td><td>${sn.OD.sii !== null ? Math.round(sn.OD.sii) + " %" : "-"}</td><td>${sn.OI.sii !== null ? Math.round(sn.OI.sii) + " %" : "-"}</td></tr>
+              <tr><td class="row-label">SIIa (Con Amp)</td><td>${sn.OD.siia !== null ? Math.round(sn.OD.siia) + " %" : "-"}</td><td>${sn.OI.siia !== null ? Math.round(sn.OI.siia) + " %" : "-"}</td></tr>
+              <tr class="highlight-row"><td class="row-label">Ganancia SII</td><td>${interpretarGananciaSII(sn.OD.sii, sn.OD.siia)}</td><td>${interpretarGananciaSII(sn.OI.sii, sn.OI.siia)}</td></tr>
+            </tbody>
+          </table>
+          <div class="table-footnote">
+            (*) Criterios establecidos en base a los ajustes realizados en el grupo control de pacientes de la Clínica Barajas.
+          </div>
+        `;
+        document.getElementById('contenedor_tabla_sii').innerHTML = htmlSII;
+      }
+    </script>
+  </body>
+</html>
