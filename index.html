@@ -461,10 +461,10 @@
           return Math.round(diff);
         }
 
-        // ── CORRECCIÓN: se excluyen del cálculo los pares con |diff| > 10 (marcados con **)
-        function calcularRSME_Global(p250, r250, p500, r500, p1k, r1k, p2k, r2k, p4k, r4k) {
+        // ── CORRECCIÓN INTEGRADA: Se añaden parámetros y par de 8 kHz al cálculo del RSME Global
+        function calcularRSME_Global(p250, r250, p500, r500, p1k, r1k, p2k, r2k, p4k, r4k, p8k, r8k) {
           let sumSquares = 0; let count = 0;
-          let pairs = [[p250, r250], [p500, r500], [p1k, r1k], [p2k, r2k], [p4k, r4k]];
+          let pairs = [[p250, r250], [p500, r500], [p1k, r1k], [p2k, r2k], [p4k, r4k], [p8k, r8k]];
           pairs.forEach(pair => {
             if (pair[0] !== null && pair[1] !== null) {
               let d = pair[1] - pair[0];
@@ -476,8 +476,9 @@
           return count > 0 ? Math.round(Math.sqrt(sumSquares / count)) : "-";
         }
 
-        let rsme_od_global = calcularRSME_Global(sn.OD.p250, sn.OD.r250, sn.OD.p500, sn.OD.r500, sn.OD.p1k, sn.OD.r1k, sn.OD.p2k, sn.OD.r2k, sn.OD.p4k, sn.OD.r4k);
-        let rsme_oi_global = calcularRSME_Global(sn.OI.p250, sn.OI.r250, sn.OI.p500, sn.OI.r500, sn.OI.p1k, sn.OI.r1k, sn.OI.p2k, sn.OI.r2k, sn.OI.p4k, sn.OI.r4k);
+        // ── CORRECCIÓN INTEGRADA: Pasamos explícitamente los parámetros p8k y r8k de ambos oídos
+        let rsme_od_global = calcularRSME_Global(sn.OD.p250, sn.OD.r250, sn.OD.p500, sn.OD.r500, sn.OD.p1k, sn.OD.r1k, sn.OD.p2k, sn.OD.r2k, sn.OD.p4k, sn.OD.r4k, sn.OD.p8k, sn.OD.r8k);
+        let rsme_oi_global = calcularRSME_Global(sn.OI.p250, sn.OI.r250, sn.OI.p500, sn.OI.r500, sn.OI.p1k, sn.OI.r1k, sn.OI.p2k, sn.OI.r2k, sn.OI.p4k, sn.OI.r4k, sn.OI.p8k, sn.OI.r8k);
 
         let htmlRSME = `
           <table class="clinical-table">
