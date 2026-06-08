@@ -7,12 +7,10 @@
     <title>vERI(e)</title>
     <meta name="apple-mobile-web-app-title" content="vERI(e)">
     
-    <!-- Enlaces limpios a los archivos físicos en tu GitHub -->
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="manifest" href="manifest.json">
     
-    <!-- MOTOR DE LA APLICACIÓN (Service Worker) -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
@@ -25,7 +23,6 @@
       }
     </script>
     
-    <!-- Librería de Gráficos de Google -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
     <style>
@@ -464,12 +461,16 @@
           return Math.round(diff);
         }
 
+        // ── CORRECCIÓN: se excluyen del cálculo los pares con |diff| > 10 (marcados con **)
         function calcularRSME_Global(p250, r250, p500, r500, p1k, r1k, p2k, r2k, p4k, r4k) {
           let sumSquares = 0; let count = 0;
           let pairs = [[p250, r250], [p500, r500], [p1k, r1k], [p2k, r2k], [p4k, r4k]];
           pairs.forEach(pair => {
             if (pair[0] !== null && pair[1] !== null) {
-              let d = pair[1] - pair[0]; sumSquares += d * d; count++;
+              let d = pair[1] - pair[0];
+              if (Math.abs(d) <= 10) {
+                sumSquares += d * d; count++;
+              }
             }
           });
           return count > 0 ? Math.round(Math.sqrt(sumSquares / count)) : "-";
