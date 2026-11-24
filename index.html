@@ -561,17 +561,57 @@
         let pta_od = ptaForTable(sn.OD);
         let pta_oi = ptaForTable(sn.OI);
 
-        function interpretarGananciaSII(sii, siia) {
-          if (sii === null || siia === null) return "-";
-          let netGain = siia - sii; 
-          if (netGain < 0) return "Revisar";
-          if (netGain <= 4) return "Muy baja";
-          if (netGain <= 9) return "Baja";
-          if (netGain <= 14) return "Moderada";
-          if (netGain <= 19) return "Promedio";
-          if (netGain <= 24) return "Alta";
+        const prescripcionSeleccionada = document.getElementById("prescriptionSelect")?.value || "nal";
+        function interpretarGananciaSII(sii, siia, d) {
+          if (prescripcionSeleccionada === "nal") {
+            if (sii === null || siia === null) return "-";
+            const netGain = siia - sii;
+            if (netGain < 0) return "Revisar";
+            if (netGain <= 4) return "Muy baja";
+            if (netGain <= 9) return "Baja";
+            if (netGain <= 14) return "Moderada";
+            if (netGain <= 19) return "Promedio";
+            if (netGain <= 24) return "Alta";
+            return "Muy alta";
+          }
+
+          // Para DSL se clasifica el SIIa frente a las curvas normativas de la PTA seleccionada.
+          if (siia === null) return "-";
+          const infantil = prescripcionSeleccionada === "dslChild";
+          const audios = infantil ? [d.a500, d.a1k, d.a2k] : [d.a500, d.a1k, d.a2k, d.a4k];
+          if (!audios.every(v => v !== null)) return "No estimable";
+          const pta = audios.reduce((a, b) => a + b, 0) / audios.length;
+          const curvas = infantil ? {
+            bajo: [[0,80],[10,80],[20,80],[30,80],[40,72],[50,64],[60,56],[70,49],[80,42],[90,34]],
+            medio:[[0,100],[10,100],[16,100],[20,97],[30,89],[40,81],[50,73],[60,65],[70,57],[80,49],[90,41]],
+            alto: [[0,100],[20,100],[30,100],[39,97],[50,88],[60,80],[70,72],[80,64],[90,56]]
+          } : {
+            bajo: [[0,83],[10,83],[20,80],[30,74],[40,65],[50,55],[60,45],[70,35],[80,25],[90,15],[100,7],[110,0],[120,0]],
+            medio:[[0,100],[10,100],[20,95],[30,90],[40,83],[50,75],[60,67],[65,62],[70,58],[80,48],[90,37],[100,27],[110,17],[120,8]],
+            alto: [[0,100],[10,100],[20,100],[30,97],[40,92],[50,87],[60,80],[70,72],[80,62],[90,52],[100,41],[110,30],[120,19]]
+          };
+          function interpolar(curva, x) {
+            if (x < curva[0][0] || x > curva[curva.length - 1][0]) return null;
+            for (let i = 1; i < curva.length; i++) {
+              if (x <= curva[i][0]) {
+                const [x0,y0] = curva[i-1], [x1,y1] = curva[i];
+                return y0 + (y1-y0) * (x-x0) / (x1-x0);
+              }
+            }
+            return curva[curva.length - 1][1];
+          }
+          const limiteInferior = interpolar(curvas.bajo, pta);
+          const media = interpolar(curvas.medio, pta);
+          const limiteSuperior = interpolar(curvas.alto, pta);
+          if ([limiteInferior, media, limiteSuperior].some(v => v === null)) return "No estimable";
+          if (siia < limiteInferior) return "Muy baja";
+          if (siia < media) return "Baja";
+          if (siia <= limiteSuperior) return "Alta";
           return "Muy alta";
         }
+        const footnoteGananciaSII = prescripcionSeleccionada === "nal"
+          ? "(*) Criterios de ganancia SII basados en el incremento entre SIIa y SII, según el criterio clínico previo."
+          : "(*) En DSL, clasificación orientativa del SIIa respecto a la PTA y a los límites de referencia de la gráfica seleccionada: muy baja (< límite inferior), baja (< media), alta (hasta límite superior) y muy alta (> límite superior). Curvas digitalizadas; no equivale al incremento SIIa−SII.";
 
         let htmlSII = `
           <table class="clinical-table">
@@ -588,11 +628,11 @@
               <tr><td class="row-label">Media Umbral (${pta3Selected ? "PTA3" : "PTA4"})</td><td>${pta_od}</td><td>${pta_oi}</td></tr>
               <tr><td class="row-label">SII (Sin Amp)</td><td>${sn.OD.sii !== null ? Math.round(sn.OD.sii) + " %" : "-"}</td><td>${sn.OI.sii !== null ? Math.round(sn.OI.sii) + " %" : "-"}</td></tr>
               <tr><td class="row-label">SIIa (Con Amp)</td><td>${sn.OD.siia !== null ? Math.round(sn.OD.siia) + " %" : "-"}</td><td>${sn.OI.siia !== null ? Math.round(sn.OI.siia) + " %" : "-"}</td></tr>
-              <tr class="highlight-row"><td class="row-label">Ganancia SII</td><td>${interpretarGananciaSII(sn.OD.sii, sn.OD.siia)}</td><td>${interpretarGananciaSII(sn.OI.sii, sn.OI.siia)}</td></tr>
+              <tr class="highlight-row"><td class="row-label">Ganancia SII</td><td>${interpretarGananciaSII(sn.OD.sii, sn.OD.siia, sn.OD)}</td><td>${interpretarGananciaSII(sn.OI.sii, sn.OI.siia, sn.OI)}</td></tr>
             </tbody>
           </table>
           <div class="table-footnote">
-            (*) Criterios establecidos en base a los ajustes realizados en el grupo control de pacientes de la Clínica Barajas.
+            ${footnoteGananciaSII}
           </div>
         `;
         document.getElementById('contenedor_tabla_sii').innerHTML = htmlSII;
