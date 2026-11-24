@@ -83,6 +83,8 @@
       .chart-container-sii { width: 100%; height: 320px; margin: 0 auto 10px auto; }
       .chart-container-proyeccion { width: 100%; height: 380px; margin: 0 auto 10px auto; }
 
+      .prescription-control { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0 16px; font-size: 14px; font-weight: 700; }
+      .prescription-control select { max-width: 100%; padding: 8px 10px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #1e293b; font: inherit; }
       .clinical-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 5px; font-size: 13.5px; background: #ffffff; border: 1px solid #cbd5e1; }
       .clinical-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 700; padding: 8px; border: 1px solid #cbd5e1; text-align: center; text-transform: uppercase; font-size: 11.5px; }
       .clinical-table td { padding: 8px; border: 1px solid #cbd5e1; text-align: center; color: #334155; }
@@ -250,8 +252,10 @@
 
           <div class="chart-block">
             <div class="main-chart-header" style="margin-top: 25px !important;">Proyección del SII</div>
-            <div class="chart-subtitle">NAL NL2</div>
+            <div class="prescription-control"><label for="prescriptionSelect">Prescripción de referencia</label><select id="prescriptionSelect" onchange="actualizarProyeccionSeleccionada()"><option value="nal">NAL-NL2</option><option value="dslChild">DSL v5 infantil</option><option value="dslAdult">DSL v5 adulto</option></select></div>
+            <div id="prescriptionSubtitle" class="chart-subtitle">NAL-NL2 (modelo de referencia actual)</div>
             <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div>
+            <div class="table-footnote">DSL infantil: PTA3 (500, 1000 y 2000 Hz), normativa UWO PedAMP para 65 dB SPL; sin extrapolar por encima de 90 dB HL. DSL adulto: PTA4 (500, 1000, 2000 y 4000 Hz), Dao et al. (2021), 65 dB SPL. Las coordenadas de las gráficas publicadas se digitalizan e interpolan linealmente; pequeñas diferencias por redondeo son posibles. <a href="https://doi.org/10.1055/s-0040-1718707" target="_blank" rel="noopener">Referencia adulta</a> · <a href="https://www.uwo.ca/nca/dsl/assets/Aided-SII-Normative-Values_App-A.pdf" target="_blank" rel="noopener">Hoja normativa infantil</a>.</div>
           </div>
         </div>
 
@@ -276,6 +280,7 @@
 
     <script>
       google.charts.load('current', {'packages':['corechart']});
+      let currentSnapshot = null;
 
       document.addEventListener('DOMContentLoaded', function() {
         switchTab('od', document.querySelectorAll('.tab-btn')[0]);
@@ -331,6 +336,7 @@
           }
         };
 
+        currentSnapshot = snapshot;
         document.getElementById('screen-form').style.display = 'none';
         document.getElementById('screen-results').style.display = 'block';
         document.getElementById('success-msg').innerHTML = `✅ Ajuste procesado con éxito`;
@@ -415,42 +421,81 @@
         chart.draw(dataTable, options);
       }
 
+      function actualizarProyeccionSeleccionada() {
+        if (currentSnapshot) { dibujarGraficoProyeccionSII_Local(currentSnapshot); construirTablasHTML(currentSnapshot); }
+      }
+
       function dibujarGraficoProyeccionSII_Local(sn) {
-        let pta_od = (sn.OD.a500!==null && sn.OD.a1k!==null && sn.OD.a2k!==null && sn.OD.a4k!==null) ? ((sn.OD.a500 + sn.OD.a1k + sn.OD.a2k + sn.OD.a4k) / 4) : null;
-        let pta_oi = (sn.OI.a500!==null && sn.OI.a1k!==null && sn.OI.a2k!==null && sn.OI.a4k!==null) ? ((sn.OI.a500 + sn.OI.a1k + sn.OI.a2k + sn.OI.a4k) / 4) : null;
+        const prescription = document.getElementById('prescriptionSelect')?.value || 'nal';
+        const isChild = prescription === 'dslChild';
+        const isAdult = prescription === 'dslAdult';
+        const label = isChild ? 'DSL v5 infantil · 65 dB SPL' : isAdult ? 'DSL v5 adulto · 65 dB SPL' : 'NAL-NL2 (modelo de referencia actual)';
+        document.getElementById('prescriptionSubtitle').textContent = label;
 
+        const pta = (ear) => {
+          const d = sn[ear];
+          const values = isChild ? [d.a500, d.a1k, d.a2k] : [d.a500, d.a1k, d.a2k, d.a4k];
+          return values.every(v => v !== null) ? values.reduce((a, b) => a + b, 0) / values.length : null;
+        };
+        const pta_od = pta('OD');
+        const pta_oi = pta('OI');
+        const maxPta = 120;
+
+        // DSL infantil: puntos de referencia digitalizados de la hoja UWO PedAMP (65 dB SPL, PTA de 500/1000/2000 Hz).
+        // La hoja recomienda cautela >70 dB HL y no ofrece una tendencia normativa definida >90 dB HL.
+        const childCurves = {
+          low: [[0,80],[10,80],[20,80],[30,80],[40,72],[50,64],[60,56],[70,49],[80,42],[90,34]],
+          mean:[[0,100],[10,100],[16,100],[20,97],[30,89],[40,81],[50,73],[60,65],[70,57],[80,49],[90,41]],
+          high:[[0,100],[20,100],[30,100],[39,97],[50,88],[60,80],[70,72],[80,64],[90,56]]
+        };
+        // DSL adulto: trazado digitalizado de Dao et al. (2021), curva de 65 dB SPL y bandas de referencia publicadas.
+        const adultCurves = {
+          low: [[0,83],[10,83],[20,80],[30,74],[40,65],[50,55],[60,45],[70,35],[80,25],[90,15],[100,7],[110,0],[120,0]],
+          mean:[[0,100],[10,100],[20,95],[30,90],[40,83],[50,75],[60,67],[65,62],[70,58],[80,48],[90,37],[100,27],[110,17],[120,8]],
+          high:[[0,100],[10,100],[20,100],[30,97],[40,92],[50,87],[60,80],[70,72],[80,62],[90,52],[100,41],[110,30],[120,19]]
+        };
+        function interpolate(points, x) {
+          if (x < points[0][0] || x > points[points.length - 1][0]) return null;
+          for (let i = 1; i < points.length; i++) {
+            if (x <= points[i][0]) {
+              const [x0,y0] = points[i-1], [x1,y1] = points[i];
+              return y0 + (y1-y0) * (x-x0) / (x1-x0);
+            }
+          }
+          return points[points.length - 1][1];
+        }
+        const curves = isChild ? childCurves : adultCurves;
         const dataTable = new google.visualization.DataTable();
-        dataTable.addColumn('number', 'PTA');
-        dataTable.addColumn('number', 'Límite Inferior');
-        dataTable.addColumn('number', 'SII (%)');
-        dataTable.addColumn('number', 'Límite Superior');
-        dataTable.addColumn('number', 'SII OD');
-        dataTable.addColumn('number', 'SII OI');
+        dataTable.addColumn('number', isChild ? 'PTA3 (dB HL)' : 'PTA4 (dB HL)');
+        dataTable.addColumn('number', isChild ? 'Límite inferior (−1 DE)' : 'Límite inferior');
+        dataTable.addColumn('number', 'SII medio (%)');
+        dataTable.addColumn('number', isChild ? 'Límite superior (+2 DE)' : 'Límite superior');
+        dataTable.addColumn('number', 'SIIa OD');
+        dataTable.addColumn('number', 'SIIa OI');
 
-        let ticksX = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
-        if (pta_od !== null && !ticksX.includes(pta_od)) ticksX.push(pta_od);
-        if (pta_oi !== null && !ticksX.includes(pta_oi)) ticksX.push(pta_oi);
-        ticksX.sort((a, b) => a - b);
-
-        ticksX.forEach(x => {
-          let y_inf = -0.7 * x + 79; let y_med = -0.7 * x + 89; let y_sup = -0.7 * x + 109;
-          let y_od = (pta_od !== null && Math.abs(x - pta_od) < 0.0001) ? sn.OD.siia : null;
-          let y_oi = (pta_oi !== null && Math.abs(x - pta_oi) < 0.0001) ? sn.OI.siia : null;
-          dataTable.addRow([x, y_inf, y_med, y_sup, y_od, y_oi]);
+        const xs = new Set(Array.from({length:maxPta+1}, (_,i)=>i));
+        [pta_od,pta_oi].forEach(x => { if (x !== null && x >= 0 && x <= maxPta) xs.add(x); });
+        [...xs].sort((a,b)=>a-b).forEach(x => {
+          const low = isChild ? interpolate(childCurves.low,x) : isAdult ? interpolate(adultCurves.low,x) : -0.7*x+79;
+          const mean = isChild ? interpolate(childCurves.mean,x) : isAdult ? interpolate(adultCurves.mean,x) : -0.7*x+89;
+          const high = isChild ? interpolate(childCurves.high,x) : isAdult ? interpolate(adultCurves.high,x) : -0.7*x+109;
+          const y_od = pta_od !== null && Math.abs(x-pta_od)<0.0001 ? sn.OD.siia : null;
+          const y_oi = pta_oi !== null && Math.abs(x-pta_oi)<0.0001 ? sn.OI.siia : null;
+          dataTable.addRow([x, low, mean, high, y_od, y_oi]);
         });
 
         const options = {
           legend: { position: 'top', alignment: 'center', textStyle: { fontSize: 10, bold: true } },
-          hAxis: { title: 'Media umbral auditivo (dB HL)', titleTextStyle: { bold: true, fontSize: 11, color: '#475569' }, viewWindow: { min: 0, max: 120 }, ticks: [0, 20, 40, 60, 80, 100, 120], gridlines: { color: '#e2e8f0' } },
-          vAxis: { title: 'SII Amplificado (0-100)', titleTextStyle: { bold: true, fontSize: 11, color: '#475569' }, viewWindow: { min: 0, max: 100 }, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], gridlines: { color: '#e2e8f0' }, format: '0' },
+          hAxis: { title: isChild ? 'PTA3 (500, 1000 y 2000 Hz; dB HL)' : 'PTA4 (500, 1000, 2000 y 4000 Hz; dB HL)', titleTextStyle: { bold: true, fontSize: 11, color: '#475569' }, viewWindow: { min: 0, max: maxPta }, ticks: [0,20,40,60,80,100,120], gridlines: { color: '#e2e8f0' } },
+          vAxis: { title: 'SII amplificado a 65 dB SPL (%)', titleTextStyle: { bold: true, fontSize: 11, color: '#475569' }, viewWindow: { min: 0, max: 100 }, ticks: [0,10,20,30,40,50,60,70,80,90,100], gridlines: { color: '#e2e8f0' }, format: '0' },
           series: {
-            0: { labelInLegend: 'Límite Inferior', color: '#1e293b', lineWidth: 2, lineDashStyle: [6, 4], pointSize: 0, enableInteractivity: false },
-            1: { labelInLegend: 'SII (%)', color: '#000000', lineWidth: 1.5, pointSize: 0, enableInteractivity: false },
-            2: { labelInLegend: 'Límite Superior', color: '#1e293b', lineWidth: 2, lineDashStyle: [8, 4, 2, 4], pointSize: 0, enableInteractivity: false },
-            3: { labelInLegend: 'SII OD', color: '#dc2626', lineWidth: 0, pointSize: 10, pointShape: 'circle' },
-            4: { labelInLegend: 'SII OI', color: '#2563eb', lineWidth: 0, pointSize: 12, pointShape: 'star' }
+            0: { labelInLegend: isChild ? 'Límite inferior (−1 DE)' : 'Límite inferior', color: '#1e293b', lineWidth: 2, lineDashStyle: [6,4], pointSize: 0, enableInteractivity: false },
+            1: { labelInLegend: 'SII medio', color: '#000000', lineWidth: 1.5, pointSize: 0, enableInteractivity: false },
+            2: { labelInLegend: isChild ? 'Límite superior (+2 DE)' : 'Límite superior', color: '#1e293b', lineWidth: 2, lineDashStyle: [8,4,2,4], pointSize: 0, enableInteractivity: false },
+            3: { labelInLegend: 'SIIa OD', color: '#dc2626', lineWidth: 0, pointSize: 10, pointShape: 'circle' },
+            4: { labelInLegend: 'SIIa OI', color: '#2563eb', lineWidth: 0, pointSize: 12, pointShape: 'star' }
           },
-          chartArea: { left: 55, width: '82%', height: '75%', top: 35, bottom: 50 }
+          chartArea: { left: 58, width: '80%', height: '75%', top: 35, bottom: 55 }
         };
         const chart = new google.visualization.LineChart(document.getElementById('chart_sii_proyeccion'));
         chart.draw(dataTable, options);
@@ -511,8 +556,10 @@
         `;
         document.getElementById('contenedor_tabla_rsme').innerHTML = htmlRSME;
 
-        let pta_od = (sn.OD.a500!==null && sn.OD.a1k!==null && sn.OD.a2k!==null && sn.OD.a4k!==null) ? Math.round((sn.OD.a500 + sn.OD.a1k + sn.OD.a2k + sn.OD.a4k) / 4) : "-";
-        let pta_oi = (sn.OI.a500!==null && sn.OI.a1k!==null && sn.OI.a2k!==null && sn.OI.a4k!==null) ? Math.round((sn.OI.a500 + sn.OI.a1k + sn.OI.a2k + sn.OI.a4k) / 4) : "-";
+        const pta3Selected = document.getElementById("prescriptionSelect")?.value === "dslChild";
+        function ptaForTable(d) { const v=pta3Selected ? [d.a500,d.a1k,d.a2k] : [d.a500,d.a1k,d.a2k,d.a4k]; return v.every(x=>x!==null) ? Math.round(v.reduce((a,b)=>a+b,0)/v.length) : "-"; }
+        let pta_od = ptaForTable(sn.OD);
+        let pta_oi = ptaForTable(sn.OI);
 
         function interpretarGananciaSII(sii, siia) {
           if (sii === null || siia === null) return "-";
@@ -538,7 +585,7 @@
             <tbody>
               <tr><td class="row-label">Intensidad</td><td>65 dB SPL</td><td>65 dB SPL</td></tr>
               <tr><td class="row-label">Estímulo</td><td>ISTS</td><td>ISTS</td></tr>
-              <tr><td class="row-label">Media Umbral (PTA)</td><td>${pta_od}</td><td>${pta_oi}</td></tr>
+              <tr><td class="row-label">Media Umbral (${pta3Selected ? "PTA3" : "PTA4"})</td><td>${pta_od}</td><td>${pta_oi}</td></tr>
               <tr><td class="row-label">SII (Sin Amp)</td><td>${sn.OD.sii !== null ? Math.round(sn.OD.sii) + " %" : "-"}</td><td>${sn.OI.sii !== null ? Math.round(sn.OI.sii) + " %" : "-"}</td></tr>
               <tr><td class="row-label">SIIa (Con Amp)</td><td>${sn.OD.siia !== null ? Math.round(sn.OD.siia) + " %" : "-"}</td><td>${sn.OI.siia !== null ? Math.round(sn.OI.siia) + " %" : "-"}</td></tr>
               <tr class="highlight-row"><td class="row-label">Ganancia SII</td><td>${interpretarGananciaSII(sn.OD.sii, sn.OD.siia)}</td><td>${interpretarGananciaSII(sn.OI.sii, sn.OI.siia)}</td></tr>
