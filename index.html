@@ -132,13 +132,45 @@
           text-align: center !important;
         }
       }
-    </style>
+    
+      @page { size: A4 landscape; margin: 6mm; }
+      @media print {
+        html, body { width: 285mm !important; height: 198mm !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #fff !important; }
+        .app-card { width: 100% !important; height: 198mm !important; max-width: none !important; padding: 0 !important; margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; overflow: hidden !important; }
+        h2 { font-size: 18px !important; margin: 0 0 1mm !important; }
+        .app-subtitle { font-size: 8px !important; line-height: 1.1 !important; margin: 0 auto 1mm !important; }
+        .app-version { font-size: 8px !important; margin: 0 auto 2mm !important; }
+        #screen-results { display: grid !important; grid-template-columns: 1fr 1.12fr 0.95fr !important; grid-template-rows: 1fr !important; gap: 3mm !important; height: 170mm !important; overflow: hidden !important; }
+        .nav-btn-back, .nav-btn-pdf, .nav-btn-clear, .tabs, form, #screen-form, #success-msg { display: none !important; }
+        .print-page-break { page-break-before: auto !important; break-before: auto !important; }
+        .print-container-block { grid-row: 1 !important; width: auto !important; max-width: none !important; min-width: 0 !important; height: 170mm !important; overflow: hidden !important; padding: 0 !important; margin: 0 !important; text-align: center !important; }
+        #screen-results > .print-container-block:nth-child(4) { grid-column: 1 !important; }
+        #screen-results > .print-container-block:nth-child(5) { grid-column: 2 !important; }
+        #screen-results > .print-container-block:nth-child(6) { grid-column: 3 !important; }
+        .main-chart-header { font-size: 10px !important; margin: 2mm 0 1mm !important; padding-bottom: 1mm !important; }
+        .main-chart-subtitle, .centered-title, .chart-subtitle { font-size: 8px !important; margin: 0 0 1mm !important; line-height: 1.1 !important; }
+        .chart-block { width: 100% !important; max-width: none !important; margin: 0 0 2mm !important; padding: 0 !important; clear: none !important; }
+        .chart-container { height: 145px !important; width: 100% !important; max-width: none !important; margin: 0 auto !important; }
+        .chart-container-sii { height: 145px !important; width: 100% !important; max-width: none !important; margin: 0 auto !important; }
+        .chart-container-proyeccion { height: 175px !important; width: 100% !important; max-width: none !important; margin: 0 auto !important; }
+        .prescription-control { gap: 1mm !important; margin: 1mm 0 !important; font-size: 8px !important; }
+        .prescription-control select { font-size: 8px !important; padding: 1mm !important; }
+        .clinical-table { width: 100% !important; max-width: none !important; margin: 1mm 0 !important; font-size: 8px !important; }
+        .clinical-table th { font-size: 7px !important; padding: 1mm !important; }
+        .clinical-table td { padding: 1mm !important; }
+        .table-footnote { font-size: 7px !important; line-height: 1.15 !important; margin: 1mm 0 !important; padding: 0 !important; }
+        .report-footer { margin: 2mm 0 0 !important; padding: 2mm 0 0 !important; }
+        .disclaimer-text { font-size: 7px !important; line-height: 1.15 !important; }
+        .app-print-footer { position: fixed !important; bottom: 1mm !important; left: 0 !important; right: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; font-size: 7px !important; }
+        .app-card > details { display: none !important; }
+      }
+      </style>
   </head>
   <body>
     <div class="app-card">
       
       <h2>vERI(e)</h2>
-      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.02</div>
+      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.03</div>
       
       <div id="screen-form">
         <div class="tabs">
