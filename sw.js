@@ -1,4 +1,4 @@
-const CACHE_NAME = 'verie-pwa-v10';
+const CACHE_NAME = 'verie-pwa-v11';
 const APP_SHELL = [
   './',
   './index.html',
