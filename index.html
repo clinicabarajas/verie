@@ -575,7 +575,7 @@
             const media = -0.7 * pta + 89;
             const limiteSuperior = -0.7 * pta + 109;
             if (siia < limiteInferior) return "Muy baja";
-            if (Math.abs(siia - media) <= 5) return "En la media";
+            if (Math.abs(siia - media) <= 5) return "Esperada";
             if (siia < media) return "Baja";
             if (siia <= limiteSuperior) return "Alta";
             return "Muy alta";
@@ -604,14 +604,14 @@
           const limiteSuperior = interpolar(curvas.alto, pta);
           if ([limiteInferior, media, limiteSuperior].some(v => v === null)) return "No estimable";
           if (siia < limiteInferior) return "Muy baja";
-          if (Math.abs(siia - media) <= 5) return "En la media";
+          if (Math.abs(siia - media) <= 5) return "Esperada";
           if (siia < media) return "Baja";
           if (siia <= limiteSuperior) return "Alta";
           return "Muy alta";
         }
         const footnoteGananciaSII = prescripcionSeleccionada === "nal"
-          ? "(*) En NAL-NL2, clasificación orientativa respecto a la curva de referencia: muy baja (< límite inferior), baja, en la media (±5 puntos de SII), alta y muy alta (> límite superior)."
-          : "(*) En DSL, clasificación orientativa del SIIa respecto a la PTA y a los límites de referencia de la gráfica seleccionada: muy baja (< límite inferior), baja, en la media (±5 puntos de SII), alta y muy alta (> límite superior). Curvas digitalizadas; no equivale al incremento SIIa−SII.";
+          ? "(*) En NAL-NL2, clasificación orientativa respecto a la curva de referencia: muy baja (< límite inferior), baja, esperada: ±5 puntos porcentuales de SII en torno a la media normativa, alta y muy alta (> límite superior)."
+          : "(*) En DSL, clasificación orientativa del SIIa respecto a la PTA y a los límites de referencia de la gráfica seleccionada: muy baja (< límite inferior), baja, esperada: ±5 puntos porcentuales de SII en torno a la media normativa, alta y muy alta (> límite superior). Curvas digitalizadas; no equivale al incremento SIIa−SII.";
 
         let htmlSII = `
           <table class="clinical-table">
