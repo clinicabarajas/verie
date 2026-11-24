@@ -170,7 +170,7 @@
     <div class="app-card">
       
       <h2>vERI(e)</h2>
-      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.08</div>
+      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.09</div>
       
       <div id="screen-form">
         <div class="tabs">
@@ -267,12 +267,12 @@
           
           <div class="chart-block">
             <div class="centered-title text-od">Audífono derecho</div>
-            <div id="chart_rsme_od" class="chart-container"></div>
+            <div id="chart_rsme_od" class="chart-container"></div><div class="pdf-axis pdf-frequency-axis"><div class="pdf-axis-ticks"><span>0,25</span><span>0,5</span><span>1</span><span>2</span><span>4</span><span>8</span></div><div>Frecuencia (kHz)</div></div>
           </div>
           
           <div class="chart-block">
             <div class="centered-title text-oi">Audífono izquierdo</div>
-            <div id="chart_rsme_oi" class="chart-container"></div>
+            <div id="chart_rsme_oi" class="chart-container"></div><div class="pdf-axis pdf-frequency-axis"><div class="pdf-axis-ticks"><span>0,25</span><span>0,5</span><span>1</span><span>2</span><span>4</span><span>8</span></div><div>Frecuencia (kHz)</div></div>
           </div>
         </div>
         
@@ -286,7 +286,7 @@
             <div class="main-chart-header" style="margin-top: 25px !important;">Proyección del SII</div>
             <div class="prescription-control"><label for="prescriptionSelect">Prescripción de referencia</label><select id="prescriptionSelect" onchange="actualizarProyeccionSeleccionada()"><option value="nal">NAL-NL2</option><option value="dslChild">DSL v5 infantil</option><option value="dslAdult">DSL v5 adulto</option></select></div>
             <div id="prescriptionSubtitle" class="chart-subtitle">NAL-NL2 (modelo de referencia actual)</div>
-            <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div>
+            <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div><div class="pdf-axis pdf-projection-axis"><div class="pdf-axis-ticks"><span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span><span>120</span></div><div id="projectionAxisTitle">PTA4 (500, 1000, 2000 y 4000 Hz; dB HL)</div></div>
             <div class="table-footnote">DSL infantil: PTA3 (500, 1000 y 2000 Hz), normativa UWO PedAMP para 65 dB SPL; sin extrapolar por encima de 90 dB HL. DSL adulto: PTA4 (500, 1000, 2000 y 4000 Hz), Dao et al. (2021), 65 dB SPL. Las coordenadas de las gráficas publicadas se digitalizan e interpolan linealmente; pequeñas diferencias por redondeo son posibles. <a href="https://doi.org/10.1055/s-0040-1718707" target="_blank" rel="noopener">Referencia adulta</a> · <a href="https://www.uwo.ca/nca/dsl/assets/Aided-SII-Normative-Values_App-A.pdf" target="_blank" rel="noopener">Hoja normativa infantil</a>.</div>
           </div>
         </div>
@@ -465,6 +465,8 @@
         const isAdult = prescription === 'dslAdult';
         const label = isChild ? 'DSL v5 infantil · 65 dB SPL' : isAdult ? 'DSL v5 adulto · 65 dB SPL' : 'NAL-NL2 (modelo de referencia actual)';
         document.getElementById('prescriptionSubtitle').textContent = label;
+        const axisTitle = document.getElementById('projectionAxisTitle');
+        if (axisTitle) axisTitle.textContent = isChild ? 'PTA3 (500, 1000 y 2000 Hz; dB HL)' : 'PTA4 (500, 1000, 2000 y 4000 Hz; dB HL)';
 
         const pta = (ear) => {
           const d = sn[ear];
@@ -682,6 +684,17 @@
       window.addEventListener('afterprint', redibujarGraficos);
     </script>
     <style>
+    .pdf-axis { display: none; }
+    @media print {
+      #screen-results .chart-container { height: 43mm !important; }
+      #screen-results .chart-container-proyeccion { height: 73mm !important; }
+      .pdf-axis { display: block !important; color: #334155 !important; text-align: center !important; font-size: 6px !important; font-weight: 600 !important; line-height: 1.1 !important; margin-top: -1mm !important; margin-bottom: 1.5mm !important; }
+      .pdf-axis-ticks { display: grid !important; text-align: center !important; }
+      .pdf-frequency-axis { width: 80% !important; margin-left: 15% !important; }
+      .pdf-frequency-axis .pdf-axis-ticks { grid-template-columns: repeat(6, 1fr) !important; }
+      .pdf-projection-axis { width: 80% !important; margin-left: 16% !important; }
+      .pdf-projection-axis .pdf-axis-ticks { grid-template-columns: repeat(7, 1fr) !important; }
+    }
     #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(2) > .table-footnote { display: none !important; }
     @page { size: A4 portrait; margin: 5mm; }
     @media print {
