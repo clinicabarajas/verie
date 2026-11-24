@@ -566,7 +566,6 @@
           if (siia === null) return "-";
 
           // Para DSL se clasifica el SIIa frente a las curvas normativas de la PTA seleccionada.
-          if (siia === null) return "-";
           const infantil = prescripcionSeleccionada === "dslChild";
           const audios = infantil ? [d.a500, d.a1k, d.a2k] : [d.a500, d.a1k, d.a2k, d.a4k];
           if (!audios.every(v => v !== null)) return "No estimable";
@@ -576,6 +575,7 @@
             const media = -0.7 * pta + 89;
             const limiteSuperior = -0.7 * pta + 109;
             if (siia < limiteInferior) return "Muy baja";
+            if (Math.abs(siia - media) <= 5) return "En la media";
             if (siia < media) return "Baja";
             if (siia <= limiteSuperior) return "Alta";
             return "Muy alta";
@@ -604,13 +604,14 @@
           const limiteSuperior = interpolar(curvas.alto, pta);
           if ([limiteInferior, media, limiteSuperior].some(v => v === null)) return "No estimable";
           if (siia < limiteInferior) return "Muy baja";
+          if (Math.abs(siia - media) <= 5) return "En la media";
           if (siia < media) return "Baja";
           if (siia <= limiteSuperior) return "Alta";
           return "Muy alta";
         }
         const footnoteGananciaSII = prescripcionSeleccionada === "nal"
-          ? "(*) En NAL-NL2, clasificación orientativa del SIIa respecto a la PTA4 y a los límites de referencia de la proyección NAL."
-          : "(*) En DSL, clasificación orientativa del SIIa respecto a la PTA y a los límites de referencia de la gráfica seleccionada: muy baja (< límite inferior), baja (< media), alta (hasta límite superior) y muy alta (> límite superior). Curvas digitalizadas; no equivale al incremento SIIa−SII.";
+          ? "(*) En NAL-NL2, clasificación orientativa respecto a la curva de referencia: muy baja (< límite inferior), baja, en la media (±5 puntos de SII), alta y muy alta (> límite superior)."
+          : "(*) En DSL, clasificación orientativa del SIIa respecto a la PTA y a los límites de referencia de la gráfica seleccionada: muy baja (< límite inferior), baja, en la media (±5 puntos de SII), alta y muy alta (> límite superior). Curvas digitalizadas; no equivale al incremento SIIa−SII.";
 
         let htmlSII = `
           <table class="clinical-table">
