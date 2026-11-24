@@ -170,7 +170,7 @@
     <div class="app-card">
       
       <h2>vERI(e)</h2>
-      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.09</div>
+      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.10</div>
       
       <div id="screen-form">
         <div class="tabs">
@@ -267,12 +267,12 @@
           
           <div class="chart-block">
             <div class="centered-title text-od">Audífono derecho</div>
-            <div id="chart_rsme_od" class="chart-container"></div><div class="pdf-axis pdf-frequency-axis"><div class="pdf-axis-ticks"><span>0,25</span><span>0,5</span><span>1</span><span>2</span><span>4</span><span>8</span></div><div>Frecuencia (kHz)</div></div>
+            <div id="chart_rsme_od" class="chart-container"></div>
           </div>
           
           <div class="chart-block">
             <div class="centered-title text-oi">Audífono izquierdo</div>
-            <div id="chart_rsme_oi" class="chart-container"></div><div class="pdf-axis pdf-frequency-axis"><div class="pdf-axis-ticks"><span>0,25</span><span>0,5</span><span>1</span><span>2</span><span>4</span><span>8</span></div><div>Frecuencia (kHz)</div></div>
+            <div id="chart_rsme_oi" class="chart-container"></div>
           </div>
         </div>
         
@@ -286,7 +286,7 @@
             <div class="main-chart-header" style="margin-top: 25px !important;">Proyección del SII</div>
             <div class="prescription-control"><label for="prescriptionSelect">Prescripción de referencia</label><select id="prescriptionSelect" onchange="actualizarProyeccionSeleccionada()"><option value="nal">NAL-NL2</option><option value="dslChild">DSL v5 infantil</option><option value="dslAdult">DSL v5 adulto</option></select></div>
             <div id="prescriptionSubtitle" class="chart-subtitle">NAL-NL2 (modelo de referencia actual)</div>
-            <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div><div class="pdf-axis pdf-projection-axis"><div class="pdf-axis-ticks"><span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span><span>120</span></div><div id="projectionAxisTitle">PTA4 (500, 1000, 2000 y 4000 Hz; dB HL)</div></div>
+            <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div>
             <div class="table-footnote">DSL infantil: PTA3 (500, 1000 y 2000 Hz), normativa UWO PedAMP para 65 dB SPL; sin extrapolar por encima de 90 dB HL. DSL adulto: PTA4 (500, 1000, 2000 y 4000 Hz), Dao et al. (2021), 65 dB SPL. Las coordenadas de las gráficas publicadas se digitalizan e interpolan linealmente; pequeñas diferencias por redondeo son posibles. <a href="https://doi.org/10.1055/s-0040-1718707" target="_blank" rel="noopener">Referencia adulta</a> · <a href="https://www.uwo.ca/nca/dsl/assets/Aided-SII-Normative-Values_App-A.pdf" target="_blank" rel="noopener">Hoja normativa infantil</a>.</div>
           </div>
         </div>
@@ -684,42 +684,41 @@
       window.addEventListener('afterprint', redibujarGraficos);
     </script>
     <style>
-    .pdf-axis { display: none; }
-    @media print {
-      #screen-results .chart-container { height: 43mm !important; }
-      #screen-results .chart-container-proyeccion { height: 73mm !important; }
-      .pdf-axis { display: block !important; color: #334155 !important; text-align: center !important; font-size: 6px !important; font-weight: 600 !important; line-height: 1.1 !important; margin-top: -1mm !important; margin-bottom: 1.5mm !important; }
-      .pdf-axis-ticks { display: grid !important; text-align: center !important; }
-      .pdf-frequency-axis { width: 80% !important; margin-left: 15% !important; }
-      .pdf-frequency-axis .pdf-axis-ticks { grid-template-columns: repeat(6, 1fr) !important; }
-      .pdf-projection-axis { width: 80% !important; margin-left: 16% !important; }
-      .pdf-projection-axis .pdf-axis-ticks { grid-template-columns: repeat(7, 1fr) !important; }
-    }
-    #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(2) > .table-footnote { display: none !important; }
-    @page { size: A4 portrait; margin: 5mm; }
-    @media print {
-      html, body { width: 200mm !important; height: 287mm !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #fff !important; }
-      .app-card { width: 200mm !important; height: 287mm !important; max-width: none !important; padding: 0 !important; margin: 0 !important; overflow: hidden !important; }
-      #screen-results { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto auto auto !important; gap: 1mm 3mm !important; height: 260mm !important; overflow: hidden !important; }
-      #screen-results > .print-container-block:nth-child(4) { grid-column: 1 !important; grid-row: 1 / span 2 !important; height: 150mm !important; overflow: hidden !important; }
-      #screen-results > .print-container-block:nth-child(5) { display: contents !important; }
-      #screen-results > .print-container-block:nth-child(6) { grid-column: 1 / span 2 !important; grid-row: 3 !important; height: auto !important; overflow: hidden !important; }
-      .chart-block { clear: none !important; width: 100% !important; max-width: none !important; margin: 0 0 1mm !important; padding: 0 !important; }
-      .chart-container { height: 55mm !important; width: 100% !important; max-width: none !important; margin: 0 auto !important; }
-      .chart-container-sii { height: 58mm !important; width: 100% !important; max-width: none !important; margin: 0 auto !important; }
-      .chart-container-proyeccion { height: 68mm !important; width: 100% !important; max-width: none !important; margin: 0 auto !important; }
-      .main-chart-header { font-size: 9px !important; margin: 1mm 0 !important; padding: 0 0 0.5mm !important; }
-      .main-chart-subtitle, .centered-title, .chart-subtitle { font-size: 7px !important; margin: 0 0 0.5mm !important; line-height: 1.05 !important; }
-      .prescription-control { gap: 1mm !important; margin: 0.5mm 0 !important; font-size: 7px !important; }
-      .prescription-control select { font-size: 7px !important; padding: 0.5mm !important; }
-      .clinical-table { width: 100% !important; max-width: none !important; margin: 0.5mm 0 !important; font-size: 7px !important; }
-      .clinical-table th, .clinical-table td { padding: 0.5mm !important; font-size: 7px !important; }
-      .table-footnote { font-size: 6px !important; line-height: 1.05 !important; margin: 0.5mm 0 !important; padding: 0 !important; }
-      .report-footer { margin: 1mm 0 0 !important; padding: 1mm 0 0 !important; }
-      .disclaimer-text { font-size: 6px !important; line-height: 1.05 !important; }
-      .app-print-footer { position: fixed !important; bottom: 1mm !important; left: 0 !important; right: 0 !important; font-size: 6px !important; margin: 0 !important; padding: 0 !important; }
-      .app-card > details { display: none !important; } #screen-results { grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important; grid-template-rows: auto auto auto auto !important; gap: 1.5mm 3mm !important; height:255mm !important; overflow:visible !important; } #screen-results > .print-container-block:nth-child(4), #screen-results > .print-container-block:nth-child(5) { display:contents !important; } #screen-results > .print-container-block:nth-child(4) > .main-chart-header { grid-column:1/span 2 !important; grid-row:1 !important; } #screen-results > .print-container-block:nth-child(4) > .chart-block:nth-child(3) { grid-column:1 !important; grid-row:2 !important; } #screen-results > .print-container-block:nth-child(4) > .chart-block:nth-child(4) { grid-column:2 !important; grid-row:2 !important; } #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(1) { grid-column:1 !important; grid-row:3 !important; } #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(2) { grid-column:2 !important; grid-row:3 !important; } #screen-results > .print-container-block:nth-child(6) { grid-column:1/span 2 !important; grid-row:4 !important; height:auto !important; max-height:70mm !important; overflow:hidden !important; } #screen-results .main-chart-header { font-size:8px !important; margin:0 0 1mm !important; padding:0 0 .5mm !important; } #screen-results .main-chart-subtitle, #screen-results .centered-title, #screen-results .chart-subtitle { font-size:7px !important; line-height:1.05 !important; margin:0 0 .5mm !important; } #screen-results .chart-block { width:100% !important; max-width:none !important; min-width:0 !important; margin:0 !important; padding:0 !important; clear:none !important; overflow:hidden !important; } #screen-results .chart-container { height:48mm !important; width:100% !important; max-width:none !important; margin:0 auto !important; } #screen-results .chart-container-sii { height:63mm !important; width:100% !important; max-width:none !important; margin:0 auto !important; } #screen-results .chart-container-proyeccion { height:78mm !important; width:100% !important; max-width:none !important; margin:0 auto !important; } #screen-results .prescription-control { gap:1mm !important; margin:.5mm 0 !important; font-size:7px !important; } #screen-results .prescription-control select { font-size:7px !important; padding:.5mm !important; } #screen-results .clinical-table { width:100% !important; max-width:none !important; margin:.5mm 0 !important; font-size:7px !important; } #screen-results .clinical-table th, #screen-results .clinical-table td { padding:.5mm !important; font-size:7px !important; } #screen-results .table-footnote { font-size:6px !important; line-height:1.05 !important; margin:.5mm 0 !important; padding:0 !important; } #screen-results .report-footer { margin:1mm 0 0 !important; padding:1mm 0 0 !important; } #screen-results .disclaimer-text { font-size:6px !important; line-height:1.05 !important; } .app-card > details { display:none !important; }
-    }
-  </style>
+      .pdf-axis { display:none !important; }
+      @page { size:A4 portrait; margin:5mm; }
+      @media print {
+        html, body { width:auto !important; height:auto !important; margin:0 !important; padding:0 !important; overflow:visible !important; background:#fff !important; }
+        body { color:#111827 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+        .app-card { width:100% !important; height:auto !important; max-width:none !important; margin:0 !important; padding:0 !important; overflow:visible !important; border-radius:0 !important; box-shadow:none !important; }
+        h2 { font-size:16pt !important; line-height:1 !important; margin:0 0 1mm !important; }
+        .app-subtitle { font-size:7pt !important; line-height:1.1 !important; margin:0 auto 1mm !important; }
+        .app-version { font-size:7pt !important; margin:0 auto 2mm !important; }
+        .nav-btn-back, .nav-btn-pdf, .nav-btn-clear, .tabs, form, #screen-form, #success-msg, .app-card > details { display:none !important; }
+        #screen-results { display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important; grid-template-rows:auto auto 56mm 66mm auto !important; gap:1mm 4mm !important; width:100% !important; height:auto !important; min-height:0 !important; max-height:none !important; overflow:visible !important; }
+        #screen-results > .print-container-block:nth-child(4), #screen-results > .print-container-block:nth-child(5) { display:contents !important; }
+        #screen-results > .print-container-block:nth-child(6) { display:block !important; grid-column:1 / span 2 !important; grid-row:5 !important; width:100% !important; height:auto !important; max-height:none !important; overflow:visible !important; margin:0 !important; padding:0 !important; }
+        #screen-results > .print-container-block:nth-child(4) > .main-chart-header { display:block !important; grid-column:1 / span 2 !important; grid-row:1 !important; font-size:9pt !important; line-height:1.1 !important; margin:0 !important; padding:0 0 1mm !important; }
+        #screen-results > .print-container-block:nth-child(4) > .main-chart-subtitle { display:block !important; grid-column:1 / span 2 !important; grid-row:2 !important; font-size:7pt !important; line-height:1.1 !important; margin:0 !important; }
+        #screen-results > .print-container-block:nth-child(4) > .chart-block:nth-child(3) { grid-column:1 !important; grid-row:3 !important; }
+        #screen-results > .print-container-block:nth-child(4) > .chart-block:nth-child(4) { grid-column:2 !important; grid-row:3 !important; }
+        #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(1) { grid-column:1 !important; grid-row:4 !important; }
+        #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(2) { grid-column:2 !important; grid-row:4 !important; }
+        #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(2) > .table-footnote { display:none !important; }
+        #screen-results .chart-block { display:block !important; clear:none !important; width:100% !important; min-width:0 !important; max-width:none !important; height:auto !important; overflow:visible !important; margin:0 !important; padding:0 !important; text-align:center !important; break-inside:avoid !important; }
+        #screen-results .centered-title { font-size:8pt !important; line-height:1.1 !important; margin:0 0 1mm !important; padding:0 !important; }
+        #screen-results .main-chart-header { font-size:8pt !important; line-height:1.1 !important; margin:0 0 1mm !important; padding:0 0 .5mm !important; }
+        #screen-results .main-chart-subtitle, #screen-results .chart-subtitle { font-size:6.5pt !important; line-height:1.1 !important; margin:0 0 1mm !important; }
+        #screen-results .chart-container { display:block !important; width:100% !important; height:49mm !important; max-width:none !important; margin:0 auto !important; }
+        #screen-results .chart-container-sii, #screen-results .chart-container-proyeccion { display:block !important; width:100% !important; height:58mm !important; max-width:none !important; margin:0 auto !important; }
+        #screen-results .prescription-control { gap:1mm !important; margin:0 0 1mm !important; font-size:6.5pt !important; }
+        #screen-results .prescription-control select { font-size:6.5pt !important; padding:0 .5mm !important; }
+        #screen-results .clinical-table { display:table !important; width:100% !important; max-width:none !important; margin:1mm 0 0 !important; font-size:6.5pt !important; break-inside:avoid !important; }
+        #screen-results .clinical-table th, #screen-results .clinical-table td { padding:.7mm !important; font-size:6.5pt !important; }
+        #screen-results .table-footnote { display:block !important; font-size:5.5pt !important; line-height:1.1 !important; margin:.7mm 0 !important; padding:0 !important; }
+        #screen-results .report-footer { margin:1mm 0 0 !important; padding:1mm 0 0 !important; }
+        #screen-results .disclaimer-text { font-size:5.5pt !important; line-height:1.15 !important; margin:0 !important; }
+        .app-print-footer { position:static !important; display:block !important; width:100% !important; margin:2mm 0 0 !important; padding:0 !important; border:0 !important; text-align:center !important; font-size:5.5pt !important; }
+      }
+    </style>
 </body>
 </html>
