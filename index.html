@@ -563,17 +563,7 @@
 
         const prescripcionSeleccionada = document.getElementById("prescriptionSelect")?.value || "nal";
         function interpretarGananciaSII(sii, siia, d) {
-          if (prescripcionSeleccionada === "nal") {
-            if (sii === null || siia === null) return "-";
-            const netGain = siia - sii;
-            if (netGain < 0) return "Revisar";
-            if (netGain <= 4) return "Muy baja";
-            if (netGain <= 9) return "Baja";
-            if (netGain <= 14) return "Moderada";
-            if (netGain <= 19) return "Promedio";
-            if (netGain <= 24) return "Alta";
-            return "Muy alta";
-          }
+          if (siia === null) return "-";
 
           // Para DSL se clasifica el SIIa frente a las curvas normativas de la PTA seleccionada.
           if (siia === null) return "-";
@@ -581,6 +571,15 @@
           const audios = infantil ? [d.a500, d.a1k, d.a2k] : [d.a500, d.a1k, d.a2k, d.a4k];
           if (!audios.every(v => v !== null)) return "No estimable";
           const pta = audios.reduce((a, b) => a + b, 0) / audios.length;
+          if (prescripcionSeleccionada === "nal") {
+            const limiteInferior = -0.7 * pta + 79;
+            const media = -0.7 * pta + 89;
+            const limiteSuperior = -0.7 * pta + 109;
+            if (siia < limiteInferior) return "Muy baja";
+            if (siia < media) return "Baja";
+            if (siia <= limiteSuperior) return "Alta";
+            return "Muy alta";
+          }
           const curvas = infantil ? {
             bajo: [[0,80],[10,80],[20,80],[30,80],[40,72],[50,64],[60,56],[70,49],[80,42],[90,34]],
             medio:[[0,100],[10,100],[16,100],[20,97],[30,89],[40,81],[50,73],[60,65],[70,57],[80,49],[90,41]],
@@ -610,7 +609,7 @@
           return "Muy alta";
         }
         const footnoteGananciaSII = prescripcionSeleccionada === "nal"
-          ? "(*) Criterios de ganancia SII basados en el incremento entre SIIa y SII, según el criterio clínico previo."
+          ? "(*) En NAL-NL2, clasificación orientativa del SIIa respecto a la PTA4 y a los límites de referencia de la proyección NAL."
           : "(*) En DSL, clasificación orientativa del SIIa respecto a la PTA y a los límites de referencia de la gráfica seleccionada: muy baja (< límite inferior), baja (< media), alta (hasta límite superior) y muy alta (> límite superior). Curvas digitalizadas; no equivale al incremento SIIa−SII.";
 
         let htmlSII = `
