@@ -1,6 +1,4 @@
-r tab: 1694892412, Title: "raw.githubusercontent.com/clinicabarajas/verie/main/sw.js", URL: "https://raw.githubusercontent.com/clinicabarajas/verie/main/sw.js".
-1 AXWebArea raw.githubusercontent.com/clinicabarajas/verie/main/sw.js
-	2 text const CACHE_NAME = 'verie-pwa-v3';
+const CACHE_NAME = 'verie-pwa-v4';
 const APP_SHELL = [
   './',
   './index.html',
