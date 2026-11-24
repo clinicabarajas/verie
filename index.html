@@ -170,7 +170,7 @@
     <div class="app-card">
       
       <h2>vERI(e)</h2>
-      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.07</div>
+      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.08</div>
       
       <div id="screen-form">
         <div class="tabs">
@@ -671,6 +671,15 @@
         `;
         document.getElementById('contenedor_tabla_sii').innerHTML = htmlSII;
       }
+      function redibujarGraficos() {
+        if (!currentSnapshot || !window.google?.visualization) return;
+        dibujarGraficoRSME_Local('OD', currentSnapshot.OD);
+        dibujarGraficoRSME_Local('OI', currentSnapshot.OI);
+        dibujarGraficoSII_Local(currentSnapshot);
+        dibujarGraficoProyeccionSII_Local(currentSnapshot);
+      }
+      window.addEventListener('beforeprint', redibujarGraficos);
+      window.addEventListener('afterprint', redibujarGraficos);
     </script>
     <style>
     #screen-results > .print-container-block:nth-child(5) > .chart-block:nth-child(2) > .table-footnote { display: none !important; }
