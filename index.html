@@ -170,7 +170,7 @@
     <div class="app-card">
       
       <h2>vERI(e)</h2>
-      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.11</div>
+      <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div><div class="app-version" style="text-align:center;color:#64748b;font-size:11px;font-weight:700;margin:-12px auto 14px">Versión 2.12</div>
       
       <div id="screen-form">
         <div class="tabs">
@@ -406,24 +406,25 @@
         ]);
 
         const lineColor = oId === 'OD' ? '#dc2626' : '#2563eb';
+        const printing = window.matchMedia && window.matchMedia('print').matches;
         const options = {
           curveType: 'none', legend: { position: 'none' },
-          hAxis: { title: 'Frecuencia (kHz)', titleTextStyle: { bold: true, fontSize: 12, color: '#64748b' }, gridlines: { color: 'transparent' } },
+          hAxis: { title: 'Frecuencia (kHz)', titleTextStyle: { bold: true, fontSize: printing ? 9 : 12, color: '#64748b' }, textStyle: { fontSize: printing ? 8 : 12, color: '#64748b' }, gridlines: { color: 'transparent' } },
           vAxis: { 
             title: 'RSME (dB SPL)', 
-            titleTextStyle: { bold: true, fontSize: 12, color: '#64748b' }, 
+            titleTextStyle: { bold: true, fontSize: printing ? 9 : 12, color: '#64748b' }, 
             viewWindow: { min: -20, max: 20 }, 
             ticks: [-20, -15, -10, -5, 0, 5, 10, 15, 20],
             format: '0'
           },
-          annotations: { textStyle: { fontSize: 15, bold: true, color: lineColor } },
+          annotations: { textStyle: { fontSize: printing ? 11 : 15, bold: true, color: lineColor } },
           series: {
             0: { color: lineColor, pointSize: 10, lineWidth: 4 }, 
             1: { color: '#475569', lineWidth: 3, lineDashStyle: [6, 4], enableInteractivity: false }, 
             2: { color: '#475569', lineWidth: 3, lineDashStyle: [6, 4], enableInteractivity: false }, 
             3: { color: '#000000', lineWidth: 2, enableInteractivity: false } 
           },
-          chartArea: { left: 55, width: '80%', height: '75%', top: 15, bottom: 45 }
+          chartArea: { left: printing ? 50 : 55, width: printing ? '82%' : '80%', height: printing ? '65%' : '75%', top: 12, bottom: printing ? 62 : 45 }
         };
         const chart = new google.visualization.LineChart(document.getElementById(`chart_rsme_${oId.toLowerCase()}`));
         chart.draw(dataTable, options);
@@ -694,7 +695,7 @@
         .app-subtitle { font-size:7pt !important; line-height:1.1 !important; margin:0 auto 1mm !important; }
         .app-version { font-size:7pt !important; margin:0 auto 2mm !important; }
         .nav-btn-back, .nav-btn-pdf, .nav-btn-clear, .tabs, form, #screen-form, #success-msg, .app-card > details { display:none !important; }
-        #screen-results { display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important; grid-template-rows:auto auto 56mm 66mm auto !important; gap:1mm 4mm !important; width:100% !important; height:auto !important; min-height:0 !important; max-height:none !important; overflow:visible !important; }
+        #screen-results { display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important; grid-template-rows:auto auto 60mm 78mm auto !important; gap:1mm 4mm !important; width:100% !important; height:auto !important; min-height:0 !important; max-height:none !important; overflow:visible !important; }
         #screen-results > .print-container-block:nth-child(4), #screen-results > .print-container-block:nth-child(5) { display:contents !important; }
         #screen-results > .print-container-block:nth-child(6) { display:block !important; grid-column:1 / span 2 !important; grid-row:5 !important; width:100% !important; height:auto !important; max-height:none !important; overflow:visible !important; margin:0 !important; padding:0 !important; }
         #screen-results > .print-container-block:nth-child(4) > .main-chart-header { display:block !important; grid-column:1 / span 2 !important; grid-row:1 !important; font-size:9pt !important; line-height:1.1 !important; margin:0 !important; padding:0 0 1mm !important; }
