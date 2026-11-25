@@ -74,8 +74,8 @@
       button.submit-btn:active { background-color: #059669; }
 
       .nav-btn-back { width: 100%; background-color: #2563eb; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
-      .nav-btn-pdf { width: 100%; background-color: #f59e0b; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
-      .nav-btn-clear { width: 100%; background-color: #ef4444; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 30px; margin-bottom: 15px; }
+      .nav-btn-pdf { width: 100%; background-color: #f59e0b; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 30px; margin-bottom: 10px; }
+      .nav-btn-clear { width: 100%; background-color: #ef4444; color: white; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 0; margin-bottom: 15px; }
 
       #screen-form { display: block; }
       #screen-results { display: none; }
@@ -279,7 +279,6 @@
 
       <div id="screen-results">
         <button type="button" class="nav-btn-back" onclick="irAPantallaFormulario()">← Volver a los Datos / Modificar</button>
-        <button type="button" class="nav-btn-pdf" onclick="window.print()">📄 Guardar Reporte (PDF / Imprimir)</button>
 
         <div id="success-msg"></div>
         <div id="charts-warning" role="status"></div>
@@ -311,7 +310,6 @@
             <div class="prescription-control"><label for="prescriptionSelect">Prescripción de referencia</label><select id="prescriptionSelect" onchange="actualizarProyeccionSeleccionada()"><option value="nal">NAL-NL2</option><option value="dslChild">DSL v5 infantil</option><option value="dslAdult">DSL v5 adulto</option></select></div>
             <div id="prescriptionSubtitle" class="chart-subtitle">NAL-NL2 (modelo de referencia actual)</div>
             <div id="chart_sii_proyeccion" class="chart-container-proyeccion"></div>
-            <div class="table-footnote">DSL infantil: PTA3 (500, 1000 y 2000 Hz), normativa UWO PedAMP para 65 dB SPL; sin extrapolar por encima de 90 dB HL. DSL adulto: PTA4 (500, 1000, 2000 y 4000 Hz), Dao et al. (2021), 65 dB SPL. Las coordenadas de las gráficas publicadas se digitalizan e interpolan linealmente; pequeñas diferencias por redondeo son posibles. <a href="https://doi.org/10.1055/s-0040-1718707" target="_blank" rel="noopener">Referencia adulta</a> · <a href="https://www.uwo.ca/nca/dsl/assets/Aided-SII-Normative-Values_App-A.pdf" target="_blank" rel="noopener">Hoja normativa infantil</a>.</div>
           </div>
         </div>
 
@@ -327,6 +325,7 @@
           </div>
         </div>
 
+        <button type="button" class="nav-btn-pdf" onclick="window.print()">📄 Guardar Reporte (PDF / Imprimir)</button>
         <button type="button" class="nav-btn-clear" onclick="limpiarTodoFormulario()">🧹 Nuevo Paciente (Borrar Todo)</button>
       </div>
 
@@ -824,7 +823,6 @@
         const presc = prescripcionActual();
         const ptaTabla = d => { const v = calcularPTA(d, presc); return v !== null ? Math.round(v) : '-'; };
         const pct = v => v !== null ? Math.round(v) + ' %' : '-';
-        const notaCurvas = presc.curvas ? ' Curvas DSL digitalizadas de las fuentes citadas.' : ' Modelo lineal NAL-NL2: media −0,7·PTA + 89; límites −10 / +20 puntos.';
 
         document.getElementById('contenedor_tabla_sii').innerHTML = `
           <table class="clinical-table">
@@ -837,12 +835,9 @@
               <tr><td class="row-label">Media umbral (${presc.pta})</td><td>${ptaTabla(sn.OD)}</td><td>${ptaTabla(sn.OI)}</td></tr>
               <tr><td class="row-label">SII (sin amp.)</td><td>${pct(sn.OD.sii)}</td><td>${pct(sn.OI.sii)}</td></tr>
               <tr><td class="row-label">SIIa (con amp.)</td><td>${pct(sn.OD.siia)}</td><td>${pct(sn.OI.siia)}</td></tr>
-              <tr class="highlight-row"><td class="row-label">Adecuación del SIIa ‡</td><td>${adecuacionSIIa(sn.OD, presc)}</td><td>${adecuacionSIIa(sn.OI, presc)}</td></tr>
+              <tr class="highlight-row"><td class="row-label">Adecuación del SIIa</td><td>${adecuacionSIIa(sn.OD, presc)}</td><td>${adecuacionSIIa(sn.OI, presc)}</td></tr>
             </tbody>
           </table>
-          <div class="table-footnote">
-            (‡) Clasificación orientativa del SIIa frente a la referencia ${presc.etiqueta.split(' (')[0]} para la ${presc.pta} del paciente: muy baja (&lt; límite inferior), baja, correcta (±5 puntos en torno a la media), alta y muy alta (&gt; límite superior). «No estimable» si falta la audiometría o la ${presc.pta} queda fuera del rango de la referencia. No equivale al incremento SIIa − SII.${notaCurvas}
-          </div>
         `;
       }
 
