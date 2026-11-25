@@ -38,6 +38,13 @@
       .app-subtitle { text-align: center; color: #64748b; font-size: 12px; font-weight: 600; line-height: 1.4; max-width: 320px; margin: 0 auto 20px auto; text-transform: uppercase; letter-spacing: 0.3px; }
       .app-version { text-align: center; color: #64748b; font-size: 11px; font-weight: 700; margin: -12px auto 14px; }
 
+      .report-data { border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 14px 4px; margin-bottom: 18px; background: #f8fafc; }
+      .report-data-title { font-size: 13px; font-weight: 700; color: #1e3a8a; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+      .report-data-title small { font-weight: 600; color: #64748b; text-transform: none; letter-spacing: 0; }
+      .report-data .grid-inputs input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 15px; background-color: #fff; font-family: inherit; color: #1e293b; }
+      .report-data .grid-inputs input:focus { border-color: #1e3a8a; outline: none; }
+      .report-data .full { grid-column: 1 / -1; }
+      .report-data-note { font-size: 11px; color: #64748b; margin: 0 0 8px; }
       .tabs { display: flex; margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e1; }
       .tab-btn { flex: 1; padding: 12px; text-align: center; background: #e2e8f0; font-family: inherit; font-weight: bold; font-size: 13px; cursor: pointer; border: none; color: #64748b; transition: all 0.2s; }
       .tab-btn:focus-visible { outline: 3px solid #1e3a8a; outline-offset: -3px; }
@@ -118,7 +125,7 @@
 
       .pr-patient { display: grid; grid-template-columns: 2.2fr 1fr 1.6fr 1fr; gap: 0 4mm; margin: 2.5mm 0 0; padding: 1.6mm 3mm; background: #f1f5f9; border-radius: 1.5mm; }
       .pr-field { font-size: 7pt; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
-      .pr-field span { display: block; margin-top: 1mm; min-height: 4.2mm; border-bottom: .25mm solid #94a3b8; font-size: 8.5pt; font-weight: 600; color: #0f172a; text-transform: none; letter-spacing: 0; }
+      .pr-field span { display: block; margin-top: 1mm; min-height: 4.2mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: .25mm solid #94a3b8; font-size: 8.5pt; font-weight: 600; color: #0f172a; text-transform: none; letter-spacing: 0; }
 
       .pr-section { margin-top: 3mm; }
       .pr-section-title { font-size: 13pt; font-weight: 800; color: #1e3a8a; text-transform: uppercase; letter-spacing: .8px; padding-bottom: 1.2mm; border-bottom: .5mm solid #1e3a8a; margin-bottom: 2.5mm; }
@@ -174,9 +181,20 @@
 
       <h2>vERI(e)</h2>
       <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div>
-      <div class="app-version">Versión 2.18</div>
+      <div class="app-version">Versión 2.19</div>
 
       <div id="screen-form">
+        <div class="report-data" id="report-data">
+          <div class="report-data-title">🧾 Datos del informe <small>(opcional)</small></div>
+          <div class="grid-inputs">
+            <div class="form-group full"><label for="info_paciente">Paciente</label><input type="text" id="info_paciente" maxlength="80" autocomplete="off" placeholder="Nombre y apellidos"></div>
+            <div class="form-group"><label for="info_historia">N.º historia</label><input type="text" id="info_historia" maxlength="30" autocomplete="off"></div>
+            <div class="form-group"><label for="info_fecha">Fecha</label><input type="date" id="info_fecha"></div>
+            <div class="form-group full"><label for="info_profesional">Profesional</label><input type="text" id="info_profesional" maxlength="80" autocomplete="off"></div>
+          </div>
+          <p class="report-data-note">Solo se usan para el informe impreso. No se envían a ningún sitio; el nombre del profesional se recuerda en este dispositivo.</p>
+        </div>
+
         <div class="tabs" role="tablist">
           <button type="button" class="tab-btn active tab-od-btn" role="tab" aria-controls="tab-od" aria-selected="true" onclick="switchTab('od')">OÍDO DERECHO (OD)</button>
           <button type="button" class="tab-btn tab-oi-btn" role="tab" aria-controls="tab-oi" aria-selected="false" onclick="switchTab('oi')">OÍDO IZQUIERDO (OI)</button>
@@ -327,14 +345,14 @@
         </div>
         <div class="pr-doc">
           <div class="pr-doc-title">Informe de verificación en oído real</div>
-          <div class="pr-doc-meta">Emitido el <span id="pr-fecha"></span> · vERI(e) v2.18</div>
+          <div class="pr-doc-meta">Emitido el <span id="pr-fecha"></span> · vERI(e) v2.19</div>
         </div>
       </header>
 
       <div class="pr-patient">
-        <div class="pr-field">Paciente<span></span></div>
-        <div class="pr-field">N.º historia<span></span></div>
-        <div class="pr-field">Profesional<span></span></div>
+        <div class="pr-field">Paciente<span id="pr-paciente"></span></div>
+        <div class="pr-field">N.º historia<span id="pr-historia"></span></div>
+        <div class="pr-field">Profesional<span id="pr-profesional"></span></div>
         <div class="pr-field">Fecha<span id="pr-fecha-campo"></span></div>
       </div>
 
@@ -499,6 +517,7 @@
 
       document.addEventListener('DOMContentLoaded', function() {
         switchTab('od');
+        iniciarDatosInforme();
         document.getElementById('mobileForm').addEventListener('keydown', function(e) {
           if (e.key === 'Enter') e.preventDefault();
         });
@@ -527,9 +546,33 @@
         window.scrollTo(0, 0);
       }
 
+      // ───────── Datos del informe (opcionales) ─────────
+      const CLAVE_PROFESIONAL = 'verie.profesional';
+      function hoyISO() {
+        const d = new Date();
+        return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      }
+      function iniciarDatosInforme() {
+        document.getElementById('info_fecha').value = hoyISO();
+        try { document.getElementById('info_profesional').value = localStorage.getItem(CLAVE_PROFESIONAL) || ''; } catch (e) {}
+        document.getElementById('info_profesional').addEventListener('change', e => {
+          try { localStorage.setItem(CLAVE_PROFESIONAL, e.target.value.trim()); } catch (err) {}
+        });
+      }
+      function leerDatosInforme() {
+        const t = id => document.getElementById(id).value.trim();
+        const iso = t('info_fecha');
+        const fecha = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso.split('-').reverse().join('/') : '';
+        return { paciente: t('info_paciente'), historia: t('info_historia'), profesional: t('info_profesional'), fecha };
+      }
+
       function limpiarTodoFormulario() {
         if (confirm('¿Estás seguro de que deseas borrar todos los datos actuales para un nuevo paciente?')) {
           document.getElementById('mobileForm').reset();
+          // Nuevo paciente: se borran paciente e historia; se mantiene el profesional y la fecha vuelve a hoy.
+          document.getElementById('info_paciente').value = '';
+          document.getElementById('info_historia').value = '';
+          document.getElementById('info_fecha').value = hoyISO();
           document.querySelectorAll('.input-error').forEach(i => i.classList.remove('input-error'));
           document.getElementById('prescriptionSelect').value = 'nal';
           currentSnapshot = null;
@@ -573,7 +616,9 @@
 
         document.getElementById('screen-form').style.display = 'none';
         document.getElementById('screen-results').style.display = 'block';
-        document.getElementById('success-msg').textContent = '✅ Ajuste procesado con éxito';
+        const info = leerDatosInforme();
+        const quien = [info.paciente, info.historia && ('H.ª ' + info.historia)].filter(Boolean).join(' · ');
+        document.getElementById('success-msg').textContent = '✅ Ajuste procesado con éxito' + (quien ? ' — ' + quien : '');
         window.scrollTo(0, 0);
 
         // Las tablas no dependen de Google Charts: se generan siempre y primero.
@@ -806,7 +851,11 @@
       function construirInformeImpresion(sn) {
         const hoy = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
         document.getElementById('pr-fecha').textContent = hoy;
-        document.getElementById('pr-fecha-campo').textContent = hoy;
+        const info = leerDatosInforme();
+        document.getElementById('pr-paciente').textContent = info.paciente;
+        document.getElementById('pr-historia').textContent = info.historia;
+        document.getElementById('pr-profesional').textContent = info.profesional;
+        document.getElementById('pr-fecha-campo').textContent = info.fecha || hoy;
 
         const presc = prescripcionActual();
         document.getElementById('pr-pta-nombre').textContent = presc.pta;
