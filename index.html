@@ -102,40 +102,62 @@
 
       .app-print-footer { text-align: center; font-size: 11px; color: #64748b; font-weight: 600; margin-top: 30px; padding-top: 15px; border-top: 1px solid #cbd5e1; clear: both; }
 
-      /* ───────── Impresión / PDF: A4 vertical, una sola definición ───────── */
-      @page { size: A4 portrait; margin: 7mm; }
+      /* ───────── Informe de impresión (A4 vertical, una hoja) ─────────
+         En pantalla se dibuja fuera de la vista con su tamaño real en papel;
+         al imprimir solo se muestra este informe. Así la vista previa es exacta. */
+      #print-report { position: absolute; left: -10000px; top: 0; width: 194mm; background: #fff; color: #1e293b;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 8pt; line-height: 1.25; }
+      #print-report * { box-sizing: border-box; }
+
+      .pr-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 2.5mm; border-bottom: 1.2mm solid #1e3a8a; }
+      .pr-brand { font-size: 22pt; font-weight: 800; color: #1e3a8a; letter-spacing: -.5px; line-height: 1; }
+      .pr-brand-sub { font-size: 7pt; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .4px; margin-top: 1mm; }
+      .pr-doc { text-align: right; }
+      .pr-doc-title { font-size: 10.5pt; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: .5px; }
+      .pr-doc-meta { font-size: 7.5pt; color: #64748b; margin-top: .8mm; }
+
+      .pr-patient { display: grid; grid-template-columns: 2.2fr 1fr 1.6fr 1fr; gap: 0 4mm; margin: 2.5mm 0 0; padding: 1.6mm 3mm; background: #f1f5f9; border-radius: 1.5mm; }
+      .pr-field { font-size: 7pt; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+      .pr-field span { display: block; margin-top: 1mm; min-height: 4.2mm; border-bottom: .25mm solid #94a3b8; font-size: 8.5pt; font-weight: 600; color: #0f172a; text-transform: none; letter-spacing: 0; }
+
+      .pr-section { margin-top: 3mm; }
+      .pr-section-title { font-size: 13pt; font-weight: 800; color: #1e3a8a; text-transform: uppercase; letter-spacing: .8px; padding-bottom: 1.2mm; border-bottom: .5mm solid #1e3a8a; margin-bottom: 2.5mm; }
+      .pr-section-title small { float: right; font-size: 7.5pt; font-weight: 600; color: #64748b; letter-spacing: .2px; text-transform: none; margin-top: 2.2mm; }
+      .pr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+
+      .pr-card { border: .3mm solid #cbd5e1; border-radius: 1.5mm; overflow: hidden; }
+      .pr-card-title { font-size: 8.5pt; font-weight: 700; padding: 1.3mm 2.5mm; background: #f8fafc; border-bottom: .3mm solid #e2e8f0; display: flex; justify-content: space-between; align-items: baseline; }
+      .pr-card-title small { font-size: 6.8pt; font-weight: 600; color: #64748b; }
+      .pr-card-title.od { color: #dc2626; border-left: 1.2mm solid #dc2626; }
+      .pr-card-title.oi { color: #2563eb; border-left: 1.2mm solid #2563eb; }
+      .pr-card-title.neutral { color: #1e293b; border-left: 1.2mm solid #1e3a8a; }
+      .pr-chart { width: 100%; }
+      .pr-chart-rmse { height: 54mm; }
+      .pr-chart-sii { height: 63mm; }
+      .pr-chart-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; font-size: 7.5pt; font-style: italic; }
+
+      .pr-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
+      .pr-table th { background: #1e3a8a; color: #fff; font-weight: 700; font-size: 6.8pt; text-transform: uppercase; letter-spacing: .3px; padding: 1.3mm 1.5mm; text-align: center; }
+      .pr-table th:first-child { text-align: left; }
+      .pr-table td { padding: 1.05mm 1.5mm; text-align: center; border-bottom: .25mm solid #e2e8f0; }
+      .pr-table td:first-child { text-align: left; font-weight: 600; color: #334155; }
+      .pr-table tbody tr:nth-child(even) td { background: #f8fafc; }
+      .pr-table tr.pr-key td { background: #e0e7ff !important; font-weight: 800; color: #0f172a; border-top: .4mm solid #1e3a8a; border-bottom: .4mm solid #1e3a8a; }
+      .pr-table .od { color: #b91c1c; } .pr-table .oi { color: #1d4ed8; }
+      .pr-note { font-size: 6.2pt; color: #64748b; line-height: 1.3; margin-top: 1.3mm; font-style: italic; }
+
+      .pr-footer { margin-top: 3.5mm; padding-top: 2mm; border-top: .3mm solid #cbd5e1; }
+      .pr-disclaimer { font-size: 6.2pt; color: #64748b; line-height: 1.35; text-align: justify; }
+      .pr-signature { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2.5mm; font-size: 6.8pt; color: #64748b; }
+      .pr-signature .pr-sign-line { width: 60mm; border-top: .25mm solid #94a3b8; padding-top: .8mm; text-align: center; }
+
+      @page { size: A4 portrait; margin: 8mm; }
       @media print {
-        html, body { width: auto; height: auto; margin: 0; padding: 0; overflow: visible; background: #fff; }
-        body { color: #111827; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .app-card { width: 100%; max-width: none; height: auto; margin: 0; padding: 0; overflow: visible; box-shadow: none; border-radius: 0; }
-
-        h2 { font-size: 16pt; line-height: 1; margin: 0 0 1mm; }
-        .app-subtitle { font-size: 7pt; line-height: 1.1; margin: 0 auto 1mm; }
-        .app-version { font-size: 7pt; margin: 0 auto 2mm; }
-
-        .nav-btn-back, .nav-btn-pdf, .nav-btn-clear, .tabs, form, #screen-form, #success-msg, #charts-warning, .app-card > details { display: none !important; }
-        #screen-results { display: block !important; width: 100%; }
-
-        /* Bloques de gráficos: dos columnas, título a todo el ancho */
-        .print-rmse, .print-sii { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 4mm; row-gap: 1mm; margin: 0 0 2mm; text-align: center; break-inside: avoid; }
-        .print-rmse > .main-chart-header, .print-rmse > .main-chart-subtitle, .print-sii > .main-chart-header { grid-column: 1 / -1; }
-        .print-tablas { display: block; break-inside: avoid; }
-
-        .chart-block { width: 100%; min-width: 0; margin: 0; padding: 0; clear: none; break-inside: avoid; }
-        .main-chart-header { color: #334155; font-size: 11pt; line-height: 1.1; letter-spacing: .3px; border-bottom: 1px solid #cbd5e1; margin: 0 0 1mm; padding: 0 0 1mm; clear: none; }
-        .centered-title { font-size: 7.5pt; line-height: 1.1; margin: 0 0 .5mm; padding: 0; }
-        .main-chart-subtitle, .chart-subtitle { font-size: 6.5pt; line-height: 1.1; margin: 0 0 .5mm; }
-        .chart-container, .chart-container-sii, .chart-container-proyeccion { height: 48mm; margin: 0 auto; }
-        .prescription-control { gap: 1mm; margin: 0 0 .5mm; font-size: 6.5pt; }
-        .prescription-control select { font-size: 6.5pt; padding: 0 .5mm; }
-        .print-sii .table-footnote { display: none; }
-
-        .clinical-table { margin: 1mm 0 0; font-size: 6.5pt; break-inside: avoid; }
-        .clinical-table th, .clinical-table td { padding: .7mm; font-size: 6.5pt; }
-        .table-footnote { font-size: 5.5pt; line-height: 1.1; margin: .7mm 0; padding: 0; }
-        .report-footer { margin: 1mm 0 0; padding: 1mm 0 0; }
-        .disclaimer-text { font-size: 5.5pt; line-height: 1.15; margin: 0; }
-        .app-print-footer { margin: 1mm 0 0; padding: 0; border: 0; font-size: 5.5pt; }
+        html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .app-card { display: none !important; }
+        #print-report { position: static; left: auto; margin: 0 auto; }
+        .pr-card, .pr-section, .pr-table { break-inside: avoid; }
       }
     </style>
   </head>
@@ -144,7 +166,7 @@
 
       <h2>vERI(e)</h2>
       <div class="app-subtitle">Verificación electroacústica de la precisión del ajuste audioprotésico</div>
-      <div class="app-version">Versión 2.17</div>
+      <div class="app-version">Versión 2.18</div>
 
       <div id="screen-form">
         <div class="tabs" role="tablist">
@@ -286,6 +308,71 @@
 
       <details style="margin:8px auto 18px;max-width:450px;text-align:left;font-size:12px;color:#334155"><summary style="cursor:pointer;text-align:center;color:#475569;font-weight:700">Referencias bibliográficas</summary><ol style="padding-left:22px;line-height:1.5"><li>Bagatto MP, Moodie ST, Malandrino AC, Richert FM, Clench DA, Scollie SD. The University of Western Ontario Pediatric Audiological Monitoring Protocol (UWO PedAMP). <i>Trends in Amplification</i>. 2011;15(1):57–76. <a href="https://doi.org/10.1177/1084713811420304" target="_blank" rel="noopener">doi:10.1177/1084713811420304</a>. <a href="https://www.uwo.ca/nca/dsl/assets/Aided-SII-Normative-Values_App-A.pdf" target="_blank" rel="noopener">Hoja normativa infantil</a>.</li><li>Moodie STF, Scollie SD, Bagatto MP, Keene K. Fit-to-targets for the desired sensation level version 5.0a hearing aid prescription method for children. <i>American Journal of Audiology</i>. 2017;26(3):251–258. <a href="https://doi.org/10.1044/2017_AJA-16-0054" target="_blank" rel="noopener">doi:10.1044/2017_AJA-16-0054</a>.</li><li>Dao A, Folkeard P, Baker S, Pumford J, Scollie S. Fit-to-Targets and Aided Speech Intelligibility Index Values for Hearing Aids Fitted to the DSL v5-Adult Prescription. <i>Journal of the American Academy of Audiology</i>. 2021;32(2):90–98. <a href="https://doi.org/10.1055/s-0040-1718707" target="_blank" rel="noopener">doi:10.1055/s-0040-1718707</a>.</li><li>Zenker F, Lancha P, Barajas de Prat JJ. Verificación en oído real con NAL-NL2: relación entre el error cuadrático medio (RMSE) y el índice de inteligibilidad del habla (SII). Manuscrito enviado a <i>Auditio</i> y aceptado. PDF del manuscrito aceptado.</li></ol><p style="font-size:10px;color:#64748b">Las curvas DSL son representaciones orientativas digitalizadas de las fuentes citadas.</p></details>
 
+    </div>
+
+    <!-- ───────── Informe de impresión / PDF ───────── -->
+    <div id="print-report" aria-hidden="true">
+      <header class="pr-header">
+        <div>
+          <div class="pr-brand">vERI(e)</div>
+          <div class="pr-brand-sub">Verificación electroacústica de la precisión del ajuste audioprotésico</div>
+        </div>
+        <div class="pr-doc">
+          <div class="pr-doc-title">Informe de verificación en oído real</div>
+          <div class="pr-doc-meta">Emitido el <span id="pr-fecha"></span> · vERI(e) v2.18</div>
+        </div>
+      </header>
+
+      <div class="pr-patient">
+        <div class="pr-field">Paciente<span></span></div>
+        <div class="pr-field">N.º historia<span></span></div>
+        <div class="pr-field">Profesional<span></span></div>
+        <div class="pr-field">Fecha<span id="pr-fecha-campo"></span></div>
+      </div>
+
+      <section class="pr-section">
+        <div class="pr-section-title">Precisión del ajuste <small>Desviación REAR − objetivo por frecuencia · tolerancia ±5 dB (BSA 2018)</small></div>
+        <div class="pr-grid">
+          <div class="pr-card">
+            <div class="pr-card-title od">Audífono derecho (OD) <small id="pr-rmse-od"></small></div>
+            <div id="pr_chart_rmse_od" class="pr-chart pr-chart-rmse"></div>
+          </div>
+          <div class="pr-card">
+            <div class="pr-card-title oi">Audífono izquierdo (OI) <small id="pr-rmse-oi"></small></div>
+            <div id="pr_chart_rmse_oi" class="pr-chart pr-chart-rmse"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pr-section">
+        <div class="pr-section-title">Speech Intelligibility Index <small>ISTS · 65 dB SPL</small></div>
+        <div class="pr-grid">
+          <div class="pr-card">
+            <div class="pr-card-title neutral">SII por OD y OI <small>sin y con audífono</small></div>
+            <div id="pr_chart_sii" class="pr-chart pr-chart-sii"></div>
+          </div>
+          <div class="pr-card">
+            <div class="pr-card-title neutral"><span>SII amplificado por <span id="pr-pta-nombre">PTA4</span></span> <small id="pr-prescripcion"></small></div>
+            <div id="pr_chart_sii_proyeccion" class="pr-chart pr-chart-sii"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pr-section">
+        <div class="pr-section-title">Tablas de datos clínicos</div>
+        <div class="pr-grid">
+          <div id="pr_tabla_rmse"></div>
+          <div id="pr_tabla_sii"></div>
+        </div>
+      </section>
+
+      <footer class="pr-footer">
+        <div class="pr-disclaimer"><strong>Aviso legal y exención de responsabilidad:</strong> Esta herramienta digital ha sido desarrollada con fines exclusivamente analíticos y de soporte orientativo. No cuenta con certificación de dispositivo médico ni validación clínica oficial. Las decisiones audioprotésicas, de ajuste y diagnósticas finales deben fundamentarse exclusivamente en el criterio y juicio crítico del profesional sanitario cualificado.</div>
+        <div class="pr-signature">
+          <div>© 2026 Zenker &amp; Lancha. Todos los derechos reservados.</div>
+          <div class="pr-sign-line">Firma del profesional</div>
+        </div>
+      </footer>
     </div>
 
     <script>
@@ -482,6 +569,7 @@
 
         // Las tablas no dependen de Google Charts: se generan siempre y primero.
         construirTablasHTML(snapshot);
+        construirInformeImpresion(snapshot);
         dibujarGraficosCuandoListos();
       }
 
@@ -500,6 +588,7 @@
           dibujarGraficoDesviacion('OI', currentSnapshot.OI);
           dibujarGraficoSII(currentSnapshot);
           dibujarGraficoProyeccionSII(currentSnapshot);
+          dibujarGraficosInforme(currentSnapshot);
         } catch (err) {
           console.error(err);
           avisoGraficos('⚠️ Error al dibujar los gráficos. Las tablas de datos clínicos sí son válidas.');
@@ -509,7 +598,8 @@
       function actualizarProyeccionSeleccionada() {
         if (!currentSnapshot) return;
         construirTablasHTML(currentSnapshot);
-        if (graficosDisponibles()) dibujarGraficoProyeccionSII(currentSnapshot);
+        construirInformeImpresion(currentSnapshot);
+        if (graficosDisponibles()) { dibujarGraficoProyeccionSII(currentSnapshot); dibujarGraficosInforme(currentSnapshot); }
       }
 
       function fmtEntero(v) { return v !== null ? String(Math.round(v)) : null; }
@@ -574,14 +664,13 @@
         new google.visualization.ColumnChart(document.getElementById('chart_sii')).draw(dataTable, options);
       }
 
-      function dibujarGraficoProyeccionSII(sn) {
-        const presc = prescripcionActual();
-        document.getElementById('prescriptionSubtitle').textContent = presc.etiqueta;
-        const ejeX = presc.pta === 'PTA3' ? 'PTA3 (500, 1000 y 2000 Hz; dB HL)' : 'PTA4 (500, 1000, 2000 y 4000 Hz; dB HL)';
+      function ejeXProyeccion(presc) {
+        return presc.pta === 'PTA3' ? 'PTA3 (500, 1000 y 2000 Hz; dB HL)' : 'PTA4 (500, 1000, 2000 y 4000 Hz; dB HL)';
+      }
 
+      function tablaProyeccion(sn, presc) {
         const pta_od = calcularPTA(sn.OD, presc);
         const pta_oi = calcularPTA(sn.OI, presc);
-
         const dataTable = new google.visualization.DataTable();
         dataTable.addColumn('number', presc.pta + ' (dB HL)');
         dataTable.addColumn('number', presc.leyendaInferior);
@@ -589,7 +678,6 @@
         dataTable.addColumn('number', presc.leyendaSuperior);
         dataTable.addColumn('number', 'SIIa OD');
         dataTable.addColumn('number', 'SIIa OI');
-
         const xs = new Set(Array.from({ length: PTA_MAX + 1 }, (_, i) => i));
         [pta_od, pta_oi].forEach(x => { if (x !== null && x >= 0 && x <= PTA_MAX) xs.add(x); });
         [...xs].sort((a, b) => a - b).forEach(x => {
@@ -598,6 +686,15 @@
           const y_oi = pta_oi !== null && Math.abs(x - pta_oi) < 0.0001 ? sn.OI.siia : null;
           dataTable.addRow([x, lim ? lim.low : null, lim ? lim.mean : null, lim ? lim.high : null, y_od, y_oi]);
         });
+        return dataTable;
+      }
+
+      function dibujarGraficoProyeccionSII(sn) {
+        const presc = prescripcionActual();
+        document.getElementById('prescriptionSubtitle').textContent = presc.etiqueta;
+        const ejeX = ejeXProyeccion(presc);
+
+        const dataTable = tablaProyeccion(sn, presc);
 
         const options = {
           legend: { position: 'top', alignment: 'center', textStyle: { fontSize: 10, bold: true } },
@@ -696,9 +793,129 @@
         `;
       }
 
+      // ───────────────────────── Informe de impresión ─────────────────────────
+      function construirInformeImpresion(sn) {
+        const hoy = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        document.getElementById('pr-fecha').textContent = hoy;
+        document.getElementById('pr-fecha-campo').textContent = hoy;
+
+        const presc = prescripcionActual();
+        document.getElementById('pr-pta-nombre').textContent = presc.pta;
+        document.getElementById('pr-prescripcion').textContent = presc.etiqueta.replace(' (modelo de referencia actual)', '');
+
+        const rOD = calcularRMSEGlobal(sn.OD), rOI = calcularRMSEGlobal(sn.OI);
+        const resumen = r => r.disponibles === 0 ? '' : r.valor === null ? 'RMSE no calculable' : `RMSE ${Math.round(r.valor)} dB`;
+        document.getElementById('pr-rmse-od').textContent = resumen(rOD);
+        document.getElementById('pr-rmse-oi').textContent = resumen(rOI);
+
+        const filas = FRECUENCIAS.map(f =>
+          `<tr><td>${f.etiqueta} kHz</td><td class="od">${celdaDesviacion(sn.OD, f.k)}</td><td class="oi">${celdaDesviacion(sn.OI, f.k)}</td></tr>`).join('');
+        const incluidas = r => r.disponibles ? `${r.incluidas} de ${r.disponibles}` : '-';
+        const hayNoCalculable = [rOD, rOI].some(r => r.disponibles > 0 && r.valor === null);
+        document.getElementById('pr_tabla_rmse').innerHTML = `
+          <table class="pr-table">
+            <thead><tr><th>Desviación (dB)</th><th>OD</th><th>OI</th></tr></thead>
+            <tbody>
+              ${filas}
+              <tr class="pr-key"><td>RMSE global (dB)</td><td class="od">${celdaRMSE(rOD)}</td><td class="oi">${celdaRMSE(rOI)}</td></tr>
+              <tr><td>Frecuencias en el RMSE</td><td>${incluidas(rOD)}</td><td>${incluidas(rOI)}</td></tr>
+            </tbody>
+          </table>
+          <div class="pr-note">(*) Fuera de tolerancia (±${TOLERANCIA_DB} dB, BSA 2018). (**) Mayor de ±${EXCLUSION_RMSE_DB} dB: excluida del RMSE global.${hayNoCalculable ? ` (†) Todas las frecuencias superan ±${EXCLUSION_RMSE_DB} dB.` : ''}</div>`;
+
+        const ptaTabla = d => { const v = calcularPTA(d, presc); return v !== null ? Math.round(v) + ' dB HL' : '-'; };
+        const pct = v => v !== null ? Math.round(v) + ' %' : '-';
+        document.getElementById('pr_tabla_sii').innerHTML = `
+          <table class="pr-table">
+            <thead><tr><th>SII</th><th>OD</th><th>OI</th></tr></thead>
+            <tbody>
+              <tr><td>Media umbral (${presc.pta})</td><td class="od">${ptaTabla(sn.OD)}</td><td class="oi">${ptaTabla(sn.OI)}</td></tr>
+              <tr><td>SII sin amplificación</td><td class="od">${pct(sn.OD.sii)}</td><td class="oi">${pct(sn.OI.sii)}</td></tr>
+              <tr><td>SIIa con amplificación</td><td class="od">${pct(sn.OD.siia)}</td><td class="oi">${pct(sn.OI.siia)}</td></tr>
+              <tr class="pr-key"><td>Adecuación del SIIa ‡</td><td class="od">${adecuacionSIIa(sn.OD, presc)}</td><td class="oi">${adecuacionSIIa(sn.OI, presc)}</td></tr>
+              <tr><td>Referencia</td><td colspan="2">${presc.etiqueta.replace(' (modelo de referencia actual)', '')}</td></tr>
+            </tbody>
+          </table>
+          <div class="pr-note">(‡) Clasificación orientativa del SIIa frente a la referencia para la ${presc.pta} del paciente: muy baja (&lt; límite inferior), baja, correcta (±5 puntos sobre la media), alta, muy alta (&gt; límite superior). No equivale al incremento SIIa − SII.${presc.curvas ? ' Curvas DSL digitalizadas de las fuentes citadas.' : ' NAL-NL2: media −0,7·PTA + 89; límites −10 / +20.'}</div>`;
+
+        // Si los gráficos no pueden cargarse, el PDF lo indica en lugar de dejar huecos en blanco.
+        if (!graficosDisponibles()) {
+          ['pr_chart_rmse_od', 'pr_chart_rmse_oi', 'pr_chart_sii', 'pr_chart_sii_proyeccion'].forEach(id => {
+            document.getElementById(id).innerHTML = '<div class="pr-chart-empty">Gráfico no disponible (sin conexión al generar el informe)</div>';
+          });
+        }
+      }
+
+      // Opciones comunes: el tamaño se toma del contenedor, que ya mide lo mismo que en el papel.
+      function prBase(el) {
+        return {
+          width: el.clientWidth, height: el.clientHeight,
+          fontName: 'Arial', fontSize: 9, backgroundColor: 'transparent',
+          titleTextStyle: { fontSize: 9 }
+        };
+      }
+      const PR_EJE_TITULO = { bold: true, italic: false, fontSize: 8.5, color: '#334155' };
+      const PR_EJE_TEXTO = { fontSize: 8, color: '#475569' };
+
+      function dibujarGraficosInforme(sn) {
+        ['OD', 'OI'].forEach(E => {
+          const el = document.getElementById('pr_chart_rmse_' + E.toLowerCase());
+          const dt = new google.visualization.DataTable();
+          dt.addColumn('string', 'Frecuencia'); dt.addColumn('number', 'Desviación'); dt.addColumn({ type: 'string', role: 'annotation' });
+          dt.addColumn('number', '+5'); dt.addColumn('number', '-5'); dt.addColumn('number', '0');
+          FRECUENCIAS.forEach(f => { const v = desviacion(sn[E], f.k); dt.addRow([f.etiqueta, v, fmtEntero(v), TOLERANCIA_DB, -TOLERANCIA_DB, 0]); });
+          const color = E === 'OD' ? '#dc2626' : '#2563eb';
+          new google.visualization.LineChart(el).draw(dt, Object.assign(prBase(el), {
+            legend: { position: 'none' }, interpolateNulls: false,
+            hAxis: { title: 'Frecuencia (kHz)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, gridlines: { color: 'transparent' } },
+            vAxis: { title: 'REAR − objetivo (dB)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: -20, max: 20 }, ticks: [-20, -10, -5, 0, 5, 10, 20], gridlines: { color: '#eef2f7' }, format: '0' },
+            annotations: { stem: { length: 6, color: 'transparent' }, textStyle: { fontSize: 9, bold: true, color: color } },
+            series: {
+              0: { color: color, pointSize: 6, lineWidth: 2.5 },
+              1: { color: '#64748b', lineWidth: 1.2, lineDashStyle: [5, 3], enableInteractivity: false },
+              2: { color: '#64748b', lineWidth: 1.2, lineDashStyle: [5, 3], enableInteractivity: false },
+              3: { color: '#0f172a', lineWidth: 1, enableInteractivity: false }
+            },
+            chartArea: { left: 50, right: 14, top: 14, bottom: 40 }
+          }));
+        });
+
+        const elSII = document.getElementById('pr_chart_sii');
+        const dtSII = new google.visualization.DataTable();
+        dtSII.addColumn('string', 'Oído');
+        dtSII.addColumn('number', 'Sin audífono'); dtSII.addColumn({ type: 'string', role: 'annotation' });
+        dtSII.addColumn('number', 'Con audífono'); dtSII.addColumn({ type: 'string', role: 'annotation' });
+        dtSII.addRows([
+          ['Oído derecho (OD)', sn.OD.sii, fmtEntero(sn.OD.sii), sn.OD.siia, fmtEntero(sn.OD.siia)],
+          ['Oído izquierdo (OI)', sn.OI.sii, fmtEntero(sn.OI.sii), sn.OI.siia, fmtEntero(sn.OI.siia)]
+        ]);
+        new google.visualization.ColumnChart(elSII).draw(dtSII, Object.assign(prBase(elSII), {
+          legend: { position: 'bottom', alignment: 'center', textStyle: { fontSize: 8, color: '#334155' } },
+          colors: ['#94a3b8', '#1e3a8a'], bar: { groupWidth: '62%' },
+          hAxis: { title: 'Oído', titleTextStyle: PR_EJE_TITULO, textStyle: { fontSize: 8, bold: true, color: '#1e293b' }, gridlines: { color: 'transparent' } },
+          vAxis: { title: 'SII (%)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: 0, max: 100 }, ticks: [0, 20, 40, 60, 80, 100], gridlines: { color: '#eef2f7' }, format: '0' },
+          annotations: { alwaysOutside: true, textStyle: { fontSize: 8.5, bold: true, color: '#1e293b' } },
+          chartArea: { left: 44, right: 12, top: 14, bottom: 56 }
+        }));
+
+        const presc = prescripcionActual();
+        const elP = document.getElementById('pr_chart_sii_proyeccion');
+        new google.visualization.LineChart(elP).draw(tablaProyeccion(sn, presc), Object.assign(prBase(elP), {
+          legend: { position: 'bottom', alignment: 'center', maxLines: 2, textStyle: { fontSize: 7.5, color: '#334155' } },
+          hAxis: { title: presc.pta + ' (dB HL)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: 0, max: PTA_MAX }, ticks: [0, 20, 40, 60, 80, 100, 120], gridlines: { color: '#eef2f7' } },
+          vAxis: { title: 'SIIa a 65 dB SPL (%)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: 0, max: 100 }, ticks: [0, 20, 40, 60, 80, 100], gridlines: { color: '#eef2f7' }, format: '0' },
+          series: {
+            0: { labelInLegend: presc.leyendaInferior, color: '#475569', lineWidth: 1.2, lineDashStyle: [5, 3], pointSize: 0, enableInteractivity: false },
+            1: { labelInLegend: 'SII medio', color: '#0f172a', lineWidth: 1.5, pointSize: 0, enableInteractivity: false },
+            2: { labelInLegend: presc.leyendaSuperior, color: '#475569', lineWidth: 1.2, lineDashStyle: [7, 3, 2, 3], pointSize: 0, enableInteractivity: false },
+            3: { labelInLegend: 'SIIa OD', color: '#dc2626', lineWidth: 0, pointSize: 8, pointShape: 'circle' },
+            4: { labelInLegend: 'SIIa OI', color: '#2563eb', lineWidth: 0, pointSize: 10, pointShape: 'star' }
+          },
+          chartArea: { left: 44, right: 12, top: 12, bottom: 66 }
+        }));
+      }
+
       // ───────────────────────── Redibujado ─────────────────────────
-      window.addEventListener('beforeprint', redibujarGraficos);
-      window.addEventListener('afterprint', redibujarGraficos);
 
       let resizeTimer = null;
       window.addEventListener('resize', () => {
