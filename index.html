@@ -112,8 +112,8 @@
       .pr-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 2.5mm; border-bottom: 1.2mm solid #1e3a8a; }
       .pr-brand { font-size: 22pt; font-weight: 800; color: #1e3a8a; letter-spacing: -.5px; line-height: 1; }
       .pr-brand-sub { font-size: 7pt; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .4px; margin-top: 1mm; }
-      .pr-doc { text-align: right; }
-      .pr-doc-title { font-size: 10.5pt; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: .5px; }
+      .pr-doc { text-align: right; white-space: nowrap; padding-left: 4mm; }
+      .pr-doc-title { font-size: 10pt; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: .5px; }
       .pr-doc-meta { font-size: 7.5pt; color: #64748b; margin-top: .8mm; }
 
       .pr-patient { display: grid; grid-template-columns: 2.2fr 1fr 1.6fr 1fr; gap: 0 4mm; margin: 2.5mm 0 0; padding: 1.6mm 3mm; background: #f1f5f9; border-radius: 1.5mm; }
@@ -132,8 +132,16 @@
       .pr-card-title.oi { color: #2563eb; border-left: 1.2mm solid #2563eb; }
       .pr-card-title.neutral { color: #1e293b; border-left: 1.2mm solid #1e3a8a; }
       .pr-chart { width: 100%; }
-      .pr-chart-rmse { height: 54mm; }
+      .pr-chart-rmse { height: 52mm; }
       .pr-chart-sii { height: 63mm; }
+      .pr-chart-sii.with-legend { height: 58mm; }
+      .pr-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .6mm 3.5mm; padding: 0 2mm 1.6mm; font-size: 6.6pt; color: #334155; }
+      .pr-legend i { display: inline-block; vertical-align: middle; margin-right: 1mm; }
+      .pr-legend .ln { width: 6mm; height: 0; border-top: .35mm solid #0f172a; }
+      .pr-legend .ln.dash { border-top: .35mm dashed #475569; }
+      .pr-legend .ln.dashdot { border-top: .35mm dotted #475569; }
+      .pr-legend .dot { width: 2.2mm; height: 2.2mm; border-radius: 50%; background: #dc2626; }
+      .pr-legend .star { font-style: normal; color: #2563eb; font-size: 8pt; line-height: 1; }
       .pr-chart-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; font-size: 7.5pt; font-style: italic; }
 
       .pr-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
@@ -353,7 +361,8 @@
           </div>
           <div class="pr-card">
             <div class="pr-card-title neutral"><span>SII amplificado por <span id="pr-pta-nombre">PTA4</span></span> <small id="pr-prescripcion"></small></div>
-            <div id="pr_chart_sii_proyeccion" class="pr-chart pr-chart-sii"></div>
+            <div id="pr_chart_sii_proyeccion" class="pr-chart pr-chart-sii with-legend"></div>
+            <div class="pr-legend"><span><i class="ln dash"></i><span id="pr-leg-inf">Límite inferior</span></span><span><i class="ln"></i>SII medio</span><span><i class="ln dashdot"></i><span id="pr-leg-sup">Límite superior</span></span><span><i class="dot"></i>SIIa OD</span><span><i class="star">★</i>SIIa OI</span></div>
           </div>
         </div>
       </section>
@@ -801,6 +810,8 @@
 
         const presc = prescripcionActual();
         document.getElementById('pr-pta-nombre').textContent = presc.pta;
+        document.getElementById('pr-leg-inf').textContent = presc.leyendaInferior;
+        document.getElementById('pr-leg-sup').textContent = presc.leyendaSuperior;
         document.getElementById('pr-prescripcion').textContent = presc.etiqueta.replace(' (modelo de referencia actual)', '');
 
         const rOD = calcularRMSEGlobal(sn.OD), rOI = calcularRMSEGlobal(sn.OI);
@@ -868,7 +879,7 @@
           new google.visualization.LineChart(el).draw(dt, Object.assign(prBase(el), {
             legend: { position: 'none' }, interpolateNulls: false,
             hAxis: { title: 'Frecuencia (kHz)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, gridlines: { color: 'transparent' } },
-            vAxis: { title: 'REAR − objetivo (dB)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: -20, max: 20 }, ticks: [-20, -10, -5, 0, 5, 10, 20], gridlines: { color: '#eef2f7' }, format: '0' },
+            vAxis: { title: 'Desviación (dB)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: -20, max: 20 }, ticks: [-20, -10, -5, 0, 5, 10, 20], gridlines: { color: '#eef2f7' }, format: '0' },
             annotations: { stem: { length: 6, color: 'transparent' }, textStyle: { fontSize: 9, bold: true, color: color } },
             series: {
               0: { color: color, pointSize: 6, lineWidth: 2.5 },
@@ -876,7 +887,7 @@
               2: { color: '#64748b', lineWidth: 1.2, lineDashStyle: [5, 3], enableInteractivity: false },
               3: { color: '#0f172a', lineWidth: 1, enableInteractivity: false }
             },
-            chartArea: { left: 50, right: 14, top: 14, bottom: 40 }
+            chartArea: { left: 58, right: 14, top: 14, bottom: 40 }
           }));
         });
 
@@ -895,13 +906,13 @@
           hAxis: { title: 'Oído', titleTextStyle: PR_EJE_TITULO, textStyle: { fontSize: 8, bold: true, color: '#1e293b' }, gridlines: { color: 'transparent' } },
           vAxis: { title: 'SII (%)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: 0, max: 100 }, ticks: [0, 20, 40, 60, 80, 100], gridlines: { color: '#eef2f7' }, format: '0' },
           annotations: { alwaysOutside: true, textStyle: { fontSize: 8.5, bold: true, color: '#1e293b' } },
-          chartArea: { left: 44, right: 12, top: 14, bottom: 56 }
+          chartArea: { left: 52, right: 12, top: 14, bottom: 56 }
         }));
 
         const presc = prescripcionActual();
         const elP = document.getElementById('pr_chart_sii_proyeccion');
         new google.visualization.LineChart(elP).draw(tablaProyeccion(sn, presc), Object.assign(prBase(elP), {
-          legend: { position: 'bottom', alignment: 'center', maxLines: 2, textStyle: { fontSize: 7.5, color: '#334155' } },
+          legend: { position: 'none' },
           hAxis: { title: presc.pta + ' (dB HL)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: 0, max: PTA_MAX }, ticks: [0, 20, 40, 60, 80, 100, 120], gridlines: { color: '#eef2f7' } },
           vAxis: { title: 'SIIa a 65 dB SPL (%)', titleTextStyle: PR_EJE_TITULO, textStyle: PR_EJE_TEXTO, viewWindow: { min: 0, max: 100 }, ticks: [0, 20, 40, 60, 80, 100], gridlines: { color: '#eef2f7' }, format: '0' },
           series: {
@@ -911,7 +922,7 @@
             3: { labelInLegend: 'SIIa OD', color: '#dc2626', lineWidth: 0, pointSize: 8, pointShape: 'circle' },
             4: { labelInLegend: 'SIIa OI', color: '#2563eb', lineWidth: 0, pointSize: 10, pointShape: 'star' }
           },
-          chartArea: { left: 44, right: 12, top: 12, bottom: 66 }
+          chartArea: { left: 52, right: 12, top: 12, bottom: 40 }
         }));
       }
 
